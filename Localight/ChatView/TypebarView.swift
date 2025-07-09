@@ -12,28 +12,30 @@ struct TypebarView: View {
     
     var body: some View {
         HStack {
-            TextField("Type here...", text: $vm.inputText)
-                .textFieldStyle(.roundedBorder)
-            
-            
+            TextField("", text: $vm.inputText)
+                .foregroundStyle(.white)
+
             Button(role: .confirm) {
                 Task {
                     await vm.getResponse()
                 }
             } label: {
-                Image(systemName: "arrow.up.circle.fill")
+                Image(systemName: "paperplane.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: 30)
+                    .padding(2)
             }
+            .foregroundStyle(vm.inputText.isEmpty ? Color.gray : Color.purple)
             .disabled(vm.isResponding ? true : false)
             .disabled(vm.inputText.isEmpty ? true : false)
-            
         }
+        .padding(5)
+        .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 10))
         .padding()
     }
 }
 
 #Preview {
-    TypebarView(vm: ChatViewModel())
+    TypebarView(vm: ChatViewModel()).background(.gray)
 }

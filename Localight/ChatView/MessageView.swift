@@ -20,10 +20,10 @@ struct MessageView: View {
                 VStack (alignment: .leading) {
                     Text(message.text)
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(.white)
                 }
                 .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
+                .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 10))
                 
                 if message.sender == .model {
                     Spacer()
@@ -34,5 +34,5 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(message: Message(text: "This is a message from the user", sender: .user))
+    MessageView(message: Message(text: "This is a message from the user", sender: .user)).background(.black)
 }
