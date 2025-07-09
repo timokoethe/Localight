@@ -13,11 +13,12 @@ struct ChatView: View {
     var body: some View {
         VStack {
             ScrollView {
-                ForEach(vm.messages) { message in
-                    MessageView(message: message)
-                }
-                Text(vm.prompter)
+                    ForEach(vm.messages) { message in
+                        MessageView(message: message)
+                    }
             }
+            .scrollBounceBehavior(.basedOnSize)
+            .defaultScrollAnchor(.bottom)
             TypebarView(vm: vm)
         }
         
