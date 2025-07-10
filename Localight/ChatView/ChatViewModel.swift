@@ -18,9 +18,6 @@ import FoundationModels
     var isResponding: Bool = false
     var messages: [Message] = []
     
-    var prompter: String = ""
-    
-    
     func getResponse() async {
         isResponding = true
         messages.append(Message(text: inputText, sender: .user))
@@ -31,7 +28,8 @@ import FoundationModels
             let message = Message(text: response, sender: .model)
             messages.append(message)
         } catch {
-            
+            let message = Message(text: error.localizedDescription, sender: .model)
+            messages.append(message)
         }
         isResponding = false
     }
