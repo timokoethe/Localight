@@ -13,6 +13,7 @@ struct ContentView: View {
     private var model = SystemLanguageModel.default
 
     var body: some View {
+        // Checks the local model's availability
         switch model.availability {
         case .available:
             ChatView()
