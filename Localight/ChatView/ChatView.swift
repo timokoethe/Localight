@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-/// A view that displays a chat interface, including a scrollable list of messages and an input typebar for composing new messages.
+/// A view that presents the main chat interface, featuring a scrollable list of messages
+/// and an input bar for composing new ones.
 ///
-/// The chat interface is organized vertically, with messages displayed in a scrollable area and a typebar at the bottom for user input.
-/// This view is intended to be used as the main screen for chat interactions.
+/// The layout is organized vertically: messages appear in a scrollable area,
+/// while the input bar remains fixed at the bottom for quick interaction.
+/// This view serves as the primary screen for chat-based interactions.
+/// Messages are not persisted and will be lost once the application is closed.
 struct ChatView: View {
     @State private var vm = ChatViewModel()
     

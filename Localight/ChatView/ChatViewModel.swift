@@ -27,11 +27,19 @@ import FoundationModels
 @Observable class ChatViewModel {
     private let session: LanguageModelSession = LanguageModelSession(instructions: "Act as the best buddie. Keep your answer short.")
     
-    var inputText: String = ""
-    var prompt: String = ""
-    var isResponding: Bool = false
-    var messages: [Message] = []
-
+    var inputText: String = ""          // The text currently entered by the user.
+    var prompt: String = ""             // The finalized user input sent to the model.
+    var isResponding: Bool = false      // Indicates whether the model is generating a response.
+    var messages: [Message] = []        // A collection of all messages displayed in the chat view.
+    
+    /// Generates a response from the model based on the user’s current input.
+    ///
+    /// This function handles the full request–response cycle:
+    /// - Marks the view as busy (`isResponding = true`)
+    /// - Appends the user’s input as a message to be shown on tthe ChatView
+    /// - Sends the finalized prompt to the model
+    /// - Awaits and appends the model’s response, or an error message if the request fails
+    /// - Resets the state to indicate the response cycle has finished
     func getResponse() async {
         isResponding = true
         messages.append(Message(text: inputText, sender: .user))
