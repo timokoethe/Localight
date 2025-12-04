@@ -19,24 +19,42 @@ struct ChatView: View {
     @State private var vm = ChatViewModel()
     
     var body: some View {
-        VStack {
-            ScrollView {
-                ForEach(vm.messages) { message in
-                    MessageView(message: message)
-                }
-                
-                // Shows a progress indicator as long as the model generates a response
-                if vm.isResponding {
-                    HStack {
-                        ProgressView()
-                        Spacer()
+        NavigationStack {
+            VStack {
+                ScrollView {
+                    ForEach(vm.messages) { message in
+                        MessageView(message: message)
                     }
-                    .padding(.horizontal)
+                    
+                    // Shows a progress indicator as long as the model generates and is not streaming a response
+                    if vm.isResponding && !vm.isStreaming {
+                        HStack {
+                            ProgressView()
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // Shows a response stream as long as the model streams a response
+                    if vm.isResponding && vm.isStreaming {
+                        HStack {
+                            MessageView(message: Message(text: vm.streamingResponse, sender: .model))
+                            Spacer()
+                        }
+                    }
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .defaultScrollAnchor(.bottom)
+                TypebarView(vm: vm)
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Stream", systemImage: vm.isStreaming ? "play" : "play.slash") {
+                        vm.isStreaming.toggle()
+                    }
+                    .disabled(vm.isResponding)
                 }
             }
-            .scrollBounceBehavior(.basedOnSize)
-            .defaultScrollAnchor(.bottom)
-            TypebarView(vm: vm)
         }
     }
 }

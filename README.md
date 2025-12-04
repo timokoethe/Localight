@@ -36,3 +36,15 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
     let response = try await session.respond(to: promptAsString).content
     ```
 
+- **Stream a Response**: Otherwise, you can call the method to receive a result as a String that is streamed by using: 
+    ```swift
+    let stream = session.streamResponse(to: promptAsString)
+
+    do {
+        for try await chunk in stream {
+            self.streamingResponse = chunk.content
+        }
+        
+        let response = try await stream.collect().content
+    } catch {}
+    ```

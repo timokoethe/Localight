@@ -28,7 +28,11 @@ struct TypebarView: View {
 
             Button(role: .confirm) {
                 Task {
-                    await vm.getResponse()
+                    if vm.isStreaming {
+                        await vm.streamResponse()
+                    } else {
+                        await vm.getResponse()
+                    }
                 }
             } label: {
                 Image(systemName: "paperplane.fill")

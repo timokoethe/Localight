@@ -35,6 +35,8 @@ struct MessageView: View {
             if message.sender == .model { Spacer() }
         }
         .padding(.horizontal)
+        .contentTransition(.interpolate)
+        .animation(.easeInOut(duration: 0.25), value: message.text)
     }
 }
 
