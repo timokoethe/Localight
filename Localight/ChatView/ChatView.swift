@@ -49,7 +49,7 @@ struct ChatView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Stream", systemImage: vm.isStreaming ? "play" : "play.slash") {
+                    Button("Stream", systemImage: vm.isStreaming ? "waveform" : "waveform.slash") {
                         vm.isStreaming.toggle()
                     }
                     .disabled(vm.isResponding)

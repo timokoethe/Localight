@@ -30,7 +30,7 @@ struct ContentView: View {
             TabView {
                 ChatView()
                     .tabItem {
-                        Label("Chat", systemImage: "speechbubble")
+                        Label("Chat", systemImage: "message")
                     }
             }
         case .unavailable(.deviceNotEligible):
