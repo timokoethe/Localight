@@ -48,3 +48,16 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
         let response = try await stream.collect().content
     } catch {}
     ```
+
+## 📏 Context Window & Token Limits
+Apple’s on-device Foundation Models operate with a limited context window per session. 
+The context window defines how many tokens the model can process within a single ```LanguageModelSession```.
+- A token is a unit of text processed by the model.
+- In Western languages (e.g. English or German), 1 token ≈ 3–4 characters.
+- In East Asian languages (e.g. Japanese or Chinese), 1 token ≈ 1 character.
+- The system model currently supports up to **4,096 tokens** per session.
+
+If this limit is exceeded, the framework throws the following error: ```LanguageModelSession.GenerationError.exceededContextWindowSize(_:)```
+
+For more details, see Apple’s official documentation:
+[TN3193 – Managing the on-device foundation model’s context window](https://developer.apple.com/documentation/technotes/tn3193-managing-the-on-device-foundation-model-s-context-window)
