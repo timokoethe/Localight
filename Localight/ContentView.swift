@@ -27,12 +27,10 @@ struct ContentView: View {
         // Checks the local model's availability
         switch model.availability {
         case .available:
-            TabView {
-                ChatView()
-                    .tabItem {
-                        Label("Chat", systemImage: "message")
-                    }
-            }
+            ChatView()
+                .tabItem {
+                    Label("Chat", systemImage: "message")
+                }
         case .unavailable(.deviceNotEligible):
             ContentUnavailableView("This device is not supported.", systemImage: "nosign")
         case .unavailable(.appleIntelligenceNotEnabled):

@@ -48,9 +48,15 @@ struct ChatView: View {
                 TypebarView(vm: vm)
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Clear", systemImage: "trash", action: vm.resetSession)
+                        .disabled(vm.isResponding)
+                }
+                
+                // Shows a button for navigating to the settings
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Stream", systemImage: vm.isStreaming ? "waveform" : "waveform.slash") {
-                        vm.isStreaming.toggle()
+                    NavigationLink(destination: SettingsView(vm: vm)) {
+                        Image(systemName: "gear")
                     }
                     .disabled(vm.isResponding)
                 }
