@@ -18,7 +18,6 @@ struct SettingsView: View {
                 HStack {
                     Text("Instructions: ")
                     Text(vm.instructions)
-                        .lineLimit(1)
                 }
                 
                 HStack {
@@ -27,7 +26,7 @@ struct SettingsView: View {
                     Text(vm.temperature.description)
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle("Information")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
