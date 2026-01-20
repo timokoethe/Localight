@@ -48,9 +48,10 @@ struct ChatView: View {
                 TypebarView(vm: vm)
             }
             .toolbar {
+                // Shows a button for deleting the current chat session
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Clear", systemImage: "trash", action: vm.resetSession)
-                        .disabled(vm.isResponding)
+                        .disabled(vm.isResponding || vm.messages.isEmpty)
                 }
                 
                 // Shows a button for navigating to the settings
