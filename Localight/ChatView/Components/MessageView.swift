@@ -16,8 +16,10 @@ import SwiftUI
 /// Messages are presented inside a padded and rounded container for readability.
 /// This view is used as a building block within the main chat interface.
 struct MessageView: View {
-    let message: Message
+    @State private var pop = false
     
+    let message: Message
+        
     var body: some View {
         HStack {
             if message.sender == .user { Spacer() }
@@ -37,6 +39,15 @@ struct MessageView: View {
         .padding(.horizontal)
         .contentTransition(.interpolate)
         .animation(.easeInOut(duration: 0.25), value: message.text)
+        .scaleEffect(pop ? 1.08 : 1.0)
+        .animation(.easeOut(duration: 0.20), value: pop)
+        .onLongPressGesture {
+            pop.toggle()
+            UIPasteboard.general.string = message.text
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+                pop = false
+            }
+        }
     }
 }
 
