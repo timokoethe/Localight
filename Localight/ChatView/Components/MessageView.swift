@@ -24,15 +24,16 @@ struct MessageView: View {
         HStack {
             if message.sender == .user { Spacer() }
             
-            VStack (alignment: .leading) {
-                Text(message.text)
-                    .foregroundStyle(message.sender == .user ? .white : .primary)
-                    .multilineTextAlignment(.leading)
-            }
-            .padding()
-            .background(message.sender == .user ? Color(red: 0.459, green: 0.333, blue: 0.902) : .clear)
-            .background(.thinMaterial)
-            .clipShape(.rect(cornerRadius: 10))
+            Text(message.text)
+                .foregroundStyle(message.sender == .user ? .white : .primary)
+                .multilineTextAlignment(message.sender == .model ? .leading : .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(12)
+                .background(message.sender == .user ? Color(red: 0.459, green: 0.333, blue: 0.902) : .clear)
+                .background(.thinMaterial)
+                .clipShape(.rect(cornerRadius: 15))
+                .frame(maxWidth: UIScreen.main.bounds.width * (2.5/3.0),
+                       alignment: message.sender == .model ? .leading : .trailing)
             
             if message.sender == .model { Spacer() }
         }
@@ -44,6 +45,9 @@ struct MessageView: View {
         .onLongPressGesture {
             pop.toggle()
             UIPasteboard.general.string = message.text
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.prepare()
+            generator.impactOccurred()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
                 pop = false
             }
@@ -52,6 +56,7 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(message: Message(text: "This is a message from the user", sender: .user))
+    MessageView(message: Message(text: "Thi", sender: .user))
     MessageView(message: Message(text: "This is a message from the user", sender: .model))
+    MessageView(message: Message(text: "This is a message from the user, which is very long for demonstration purposes only.", sender: .user))
 }
