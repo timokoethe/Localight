@@ -41,7 +41,7 @@ struct TypebarView: View {
                     .frame(maxWidth: 30)
                     .padding(2)
             }
-            .foregroundStyle(vm.inputText.isEmpty ? Color.gray : Color(red: 0.459, green: 0.333, blue: 0.902))
+            .foregroundStyle(vm.inputText.isEmpty ? .gray : .purple)
             .disabled(vm.isResponding ? true : false)
             .disabled(vm.inputText.isEmpty ? true : false)
         }

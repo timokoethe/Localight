@@ -26,10 +26,8 @@ struct MessageView: View {
             
             Text(message.text)
                 .foregroundStyle(message.sender == .user ? .white : .primary)
-                .multilineTextAlignment(message.sender == .model ? .leading : .leading)
-                .fixedSize(horizontal: false, vertical: true)
                 .padding(12)
-                .background(message.sender == .user ? Color(red: 0.459, green: 0.333, blue: 0.902) : .clear)
+                .background(message.sender == .user ? .purple : .clear)
                 .background(.thinMaterial)
                 .clipShape(.rect(cornerRadius: 15))
                 .frame(maxWidth: UIScreen.main.bounds.width * (2.5/3.0),
@@ -39,7 +37,7 @@ struct MessageView: View {
         }
         .padding(.horizontal)
         .contentTransition(.interpolate)
-        .animation(.easeInOut(duration: 0.25), value: message.text)
+        .animation(.easeInOut(duration: 0.2), value: message.text)
         .scaleEffect(pop ? 1.08 : 1.0)
         .animation(.easeOut(duration: 0.20), value: pop)
         .onLongPressGesture {
