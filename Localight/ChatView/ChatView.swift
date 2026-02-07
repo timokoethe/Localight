@@ -45,7 +45,10 @@ struct ChatView: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .defaultScrollAnchor(.bottom)
-                TypebarView(vm: vm)
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    TypebarView(vm: vm)
+                }
+
             }
             .toolbar {
                 // Shows a button for deleting the current chat session

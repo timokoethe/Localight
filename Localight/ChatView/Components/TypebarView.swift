@@ -25,6 +25,7 @@ struct TypebarView: View {
     var body: some View {
         HStack {
             TextField("Type here ...", text: $vm.inputText)
+                .padding(.horizontal, 6)
 
             Button(role: .confirm) {
                 Task {
@@ -39,17 +40,15 @@ struct TypebarView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: 30)
-                    .padding(2)
+                    .padding(.trailing, 6)
+                    .padding(.vertical, 2)
             }
             .foregroundStyle(vm.inputText.isEmpty ? .gray : .purple)
             .disabled(vm.isResponding ? true : false)
             .disabled(vm.inputText.isEmpty ? true : false)
         }
-        .padding(5)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray, lineWidth: 2)
-        )
+        .padding(6)
+        .glassEffect()
         .padding()
     }
 }
