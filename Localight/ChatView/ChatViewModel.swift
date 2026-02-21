@@ -95,7 +95,6 @@ import FoundationModels
     /// - Resets the state to indicate the response cycle has finished
     func streamResponse() async {
         isResponding = true
-        isResponding = true
         messages.append(Message(text: inputText, sender: .user))
         prompt = inputText
         inputText = ""
@@ -114,7 +113,6 @@ import FoundationModels
         }
         streamingResponse = ""
         isResponding = false
-        print(session.transcript)
     }
     
     /// Resets the current session to initial values.
