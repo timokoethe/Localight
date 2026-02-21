@@ -19,6 +19,8 @@ struct MessageView: View {
     @State private var pop = false
     
     let message: Message
+    private let generator: UIImpactFeedbackGenerator = .init(style: .medium)
+    private let uiPasteboard: UIPasteboard = UIPasteboard.general
         
     var body: some View {
         HStack {
@@ -43,8 +45,7 @@ struct MessageView: View {
         .animation(.easeOut(duration: 0.20), value: pop)
         .onLongPressGesture {
             pop.toggle()
-            UIPasteboard.general.string = message.text
-            let generator = UIImpactFeedbackGenerator(style: .medium)
+            uiPasteboard.string = message.text
             generator.prepare()
             generator.impactOccurred()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
