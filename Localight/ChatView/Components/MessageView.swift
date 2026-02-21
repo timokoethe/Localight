@@ -30,8 +30,9 @@ struct MessageView: View {
                 .background(message.sender == .user ? .purple : .clear)
                 .background(.thinMaterial)
                 .clipShape(.rect(cornerRadius: 15))
-                .frame(maxWidth: UIScreen.main.bounds.width * (2.5/3.0),
-                       alignment: message.sender == .model ? .leading : .trailing)
+                .containerRelativeFrame(.horizontal, alignment: message.sender == .model ? .leading : .trailing) { len, _  in
+                        return len / 1.2
+                }
             
             if message.sender == .model { Spacer() }
         }
@@ -54,7 +55,8 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(message: Message(text: "Thi", sender: .user))
-    MessageView(message: Message(text: "This is a message from the user", sender: .model))
+    MessageView(message: Message(text: "Hi there!", sender: .user))
+    MessageView(message: Message(text: "Hi there!", sender: .model))
+    MessageView(message: Message(text: "This is a message from the model, which is very long for demonstration purposes only.", sender: .model))
     MessageView(message: Message(text: "This is a message from the user, which is very long for demonstration purposes only.", sender: .user))
 }
