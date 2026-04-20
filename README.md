@@ -1,8 +1,13 @@
 # Localight for iOS
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-orange)](https://opensource.org/license/mit)
 ![Framework](https://img.shields.io/badge/SwiftUI-orange)
+![Swift](https://img.shields.io/badge/Swift-6-orange)
 ![Platform](https://img.shields.io/badge/Platforms-iOS-orange)
+![Xcode](https://img.shields.io/badge/Xcode-26-orange)
+![iOS](https://img.shields.io/badge/iOS-26-orange)
 ![Apple](https://img.shields.io/badge/Apple-000000?style=flat&logo=apple)
+
 
 **Localight** is a simple SwiftUI chatbot app for iOS 26, powered entirely by Apple’s on-device Foundation Models. Designed for demonstration purposes, Localight offers fast, private, and completely offline AI chat — no internet connection or server required.
 
@@ -19,7 +24,9 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
 - 🗑️ **No history**: Conversation is not saved after closing the app.
 
 ## 🛠 Manual
+
 - **Import the Library**: To work with [Foundation Models](https://developer.apple.com/documentation/foundationmodels), you must import the library in every file where you intend to use them. Go with:
+
     ```swift
     import FoundationModels
     ```
@@ -27,16 +34,19 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
 - **Check Availability**: The key object is the [SystemLanguageModel](https://developer.apple.com/documentation/foundationmodels/systemlanguagemodel). This can indicate whether the model is ```.available``` or ```.unavailable```. In case of unavailability, a reason is also provided.
 
 - **Create a LanguageModelSession**: To start prompting, you need to create a [LanguageModelSession](https://developer.apple.com/documentation/foundationmodels/languagemodelsession). When you create a session you can provide instructions that tells the model what its role is and provides guidance on how to respond. These instructions should never be editable by the user:
+
     ```swift
     let session = LanguageModelSession(instructions: "You are the best friend.")
     ```
 
-- **Generate a Response**: Finally, call the method to receive a result as a String by using: 
+- **Generate a Response**: Finally, call the method to receive a result as a String by using:
+
     ```swift
     let response = try await session.respond(to: promptAsString).content
     ```
 
-- **Stream a Response**: Otherwise, you can call the method to receive a result as a String that is streamed by using: 
+- **Stream a Response**: Otherwise, you can call the method to receive a result as a String that is streamed by using:
+
     ```swift
     let stream = session.streamResponse(to: promptAsString)
 
@@ -50,8 +60,10 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
     ```
 
 ## 📏 Context Window & Token Limits
+
 Apple’s on-device Foundation Models operate with a limited context window per session. 
 The context window defines how many tokens the model can process within a single ```LanguageModelSession```.
+
 - A token is a unit of text processed by the model.
 - In Western languages (e.g. English or German), 1 token ≈ 3–4 characters.
 - In East Asian languages (e.g. Japanese or Chinese), 1 token ≈ 1 character.

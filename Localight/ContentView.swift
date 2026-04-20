@@ -8,17 +8,10 @@
 import SwiftUI
 import FoundationModels
 
-/// The root view of the app.
+/// The app’s root view.
 ///
-/// `ContentView` checks the availability of the local system language model
-/// and displays the appropriate screen:
-/// - If the model is available, the chat interface (`ChatView`) is shown.
-/// - If unavailable, a `ContentUnavailableView` is presented with a reason,
-///   such as device incompatibility, disabled Apple Intelligence,
-///   the model still preparing, or other issues.
-///
-/// This view ensures that users always receive clear feedback about the model’s state
-/// before interacting with the chat interface.
+/// Displays the chat interface when the on-device language model is available.
+/// Otherwise, it presents a fallback screen explaining why the model cannot be used.
 struct ContentView: View {
     // Create a reference to the system language model.
     private var model = SystemLanguageModel.default
