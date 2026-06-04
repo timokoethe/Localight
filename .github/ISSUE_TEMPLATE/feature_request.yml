@@ -1,0 +1,63 @@
+name: Feature request
+description: Suggest an improvement for Localight.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Localight is a small demo app for Apple's on-device Foundation Models.
+        Please keep requests focused on the local, private, offline chat experience.
+  - type: textarea
+    id: need
+    attributes:
+      label: What would this help with?
+      description: Describe the demo, presentation, or workflow problem this would solve.
+      placeholder: This would help when...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of Localight would this affect?
+      options:
+        - Chat UI
+        - Model response generation
+        - Streaming responses
+        - Model availability handling
+        - Settings screen
+        - Documentation
+        - Build or project setup
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed behavior
+      description: What would you like Localight to do?
+      placeholder: Localight should...
+    validations:
+      required: true
+  - type: dropdown
+    id: offline_privacy
+    attributes:
+      label: Offline and privacy impact
+      description: Does this keep Localight fully on-device and offline?
+      options:
+        - Keeps everything on-device and offline
+        - Might require network access or external services
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: ui_notes
+    attributes:
+      label: UI notes or examples
+      description: Add screenshots, recordings, links, or rough sketches if this changes the interface.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or examples
+      description: Link examples or describe approaches you already tried, if applicable.

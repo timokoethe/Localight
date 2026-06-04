@@ -1,0 +1,92 @@
+name: Bug report
+description: Tell us about something in Localight that is not working correctly.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a Localight issue.
+        Please do not include private prompts, credentials, or sensitive screenshots.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe what you expected and what happened instead.
+      placeholder: I expected... but instead...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the smallest sequence that causes the problem.
+      placeholder: |
+        1. Open Localight
+        2. Type a prompt
+        3. Tap Send
+        4. See ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Which part of Localight is affected?
+      options:
+        - Chat UI
+        - Model response generation
+        - Streaming responses
+        - Model availability screen
+        - Settings screen
+        - Build or project setup
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device or simulator
+      placeholder: iPhone 17 Pro simulator, iPhone 16, etc.
+    validations:
+      required: true
+  - type: input
+    id: ios_version
+    attributes:
+      label: iOS version
+      placeholder: iOS 26.x
+    validations:
+      required: true
+  - type: input
+    id: xcode_version
+    attributes:
+      label: Xcode version
+      placeholder: Xcode 26.x
+    validations:
+      required: false
+  - type: dropdown
+    id: model_availability
+    attributes:
+      label: Foundation Models availability
+      description: What did Localight show for the on-device model?
+      options:
+        - Available
+        - Device not eligible
+        - Apple Intelligence not enabled
+        - Model not ready
+        - Model unavailable for another reason
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots, recording, or logs
+      description: Add anything that helps explain the issue. Remove private prompts or sensitive content first.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any related details, workarounds, or whether this started after a specific change.

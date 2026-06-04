@@ -72,3 +72,7 @@ If this limit is exceeded, the framework throws the following error: ```Language
 
 For more details, see Apple’s official documentation:
 [TN3193 – Managing the on-device foundation model’s context window](https://developer.apple.com/documentation/technotes/tn3193-managing-the-on-device-foundation-model-s-context-window)
+
+## License
+
+Localight is available under the MIT License. See [LICENSE](LICENSE) for the full license text.
