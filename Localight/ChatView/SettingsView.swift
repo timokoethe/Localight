@@ -26,6 +26,7 @@ struct SettingsView: View {
             List {
                 Section {
                     Toggle("Stream responses", isOn: $vm.isStreaming)
+                        .tint(Color("Tint"))
                 } footer: {
                     Text("Streams output as it’s generated. Turn off to show the full response at once.")
                 }

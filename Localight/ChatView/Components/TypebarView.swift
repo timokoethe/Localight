@@ -43,7 +43,7 @@ struct TypebarView: View {
                     .padding(.trailing, 6)
                     .padding(.vertical, 2)
             }
-            .foregroundStyle(vm.inputText.isEmpty ? .gray : .purple)
+            .foregroundStyle(vm.inputText.isEmpty ? .gray : Color("Tint"))
             .disabled(vm.isResponding ? true : false)
             .disabled(vm.inputText.isEmpty ? true : false)
         }
