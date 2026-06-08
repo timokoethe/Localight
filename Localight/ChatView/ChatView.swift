@@ -60,7 +60,7 @@ struct ChatView: View {
                 // Shows a button for navigating to the settings
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView(vm: vm)) {
-                        Image(systemName: "info")
+                        Image(systemName: "gear")
                     }
                     .disabled(vm.isResponding)
                 }

@@ -9,16 +9,17 @@ import Foundation
 import FoundationModels
 
 /// `ChatViewModel` is an observable class that manages the state and logic for a chat interface utilizing a language model session.
-/// 
+///
 /// Responsibilities include:
 /// - Managing user input and chat messages.
 /// - Interfacing with `LanguageModelSession` to send prompts and handle responses.
 /// - Tracking the status of responses and updating the UI accordingly.
-/// 
+///
 /// Properties:
 /// - `session`: Handles communication with the language model, initialized with specific instructions.
 /// - `options`: Defines some runtime parameters of the model.
-/// - `instructions`: Defines how the model should respond and behave.
+/// - `instructions`: Defines how the model should respond and behave (the active system prompt).
+/// - `instructionsDraft`: The in-progress edit of the system prompt, applied to `instructions` only on confirmation.
 /// - `temperature`: Defines the creativity of the model.
 /// - `samplingMode`: Defines how the model chooses the next token in a response.
 /// - `inputText`: The current text entered by the user.
@@ -27,30 +28,42 @@ import FoundationModels
 /// - `isStreaming`: Indicates whether a response should be streamed to the UI or not.
 /// - `messages`: The list of chat messages exchanged between the user and the model.
 /// - `streamingResponse`: The current chunk of text for the UI of a streamed response by the model.
+/// - `hasInstructionChanges`: Whether the draft holds a non-empty change relative to the active instructions.
 ///
 /// Methods:
 /// - `getResponse()`: Asynchronously sends the current prompt to the language model and appends both user and model messages to the chat, handling errors gracefully.
 /// - `streamResponse()`: Asynchronously sends the current prompt to the language model and streams the models response to the chat while being generated, handling errors gracefully.
+/// - `applyInstructions()`: Applies the edited draft as the new system prompt and rebuilds the session (clearing the chat).
 /// - `resetSession()`: Resets the current language model session by setting all variables to their initial values.
 @Observable class ChatViewModel {
     private var session: LanguageModelSession
     private var options: GenerationOptions
-    
-    var instructions: String    // The instructions to the model of how it should respond and behave.
-    var temperature: Double     // The temperature to increase creativity.
+
+    var instructions: String        // The instructions to the model of how it should respond and behave.
+    var instructionsDraft: String   // The in-progress edit of the system prompt, applied on confirmation.
+    var temperature: Double         // The temperature to increase creativity.
     var samplingMode: GenerationOptions.SamplingMode
-    var inputText: String       // The text currently entered by the user.
-    var prompt: String          // The finalized user input sent to the model.
-    var isResponding: Bool      // Indicates whether the model is generating a response.
-    var isStreaming: Bool       // Indicates whether a response should be streamed to the UI or not.
-    var messages: [Message]     // A collection of all messages displayed in the chat view.
+    var inputText: String           // The text currently entered by the user.
+    var prompt: String              // The finalized user input sent to the model.
+    var isResponding: Bool          // Indicates whether the model is generating a response.
+    var isStreaming: Bool           // Indicates whether a response should be streamed to the UI or not.
+    var messages: [Message]         // A collection of all messages displayed in the chat view.
     var streamingResponse: String
-    
+
+    /// Whether the draft differs from the active instructions and is non-empty,
+    /// i.e. whether there is a meaningful system prompt change to apply.
+    var hasInstructionChanges: Bool {
+        let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !trimmed.isEmpty && trimmed != instructions
+    }
+
     /// Initializes all variables with their values.
     init() {
-        self.session = LanguageModelSession(instructions: "Act as the best buddie. Keep your answer short.")
+        let defaultInstructions = "Act as the best buddie. Keep your answer short."
+        self.session = LanguageModelSession(instructions: defaultInstructions)
         self.options = GenerationOptions(sampling: .greedy, temperature: 2.0)
-        self.instructions = "Act as the best buddie. Keep your answer short."
+        self.instructions = defaultInstructions
+        self.instructionsDraft = defaultInstructions
         self.temperature = 2.0
         self.samplingMode = .greedy
         self.inputText = ""
@@ -115,6 +128,19 @@ import FoundationModels
         isResponding = false
     }
     
+    /// Applies the edited draft as the new system prompt.
+    ///
+    /// Foundation Models fixes a session’s instructions at creation time, so a new system
+    /// prompt requires a fresh session. This function trims and promotes the draft to the
+    /// active `instructions`, keeps the draft in sync, and rebuilds the session via
+    /// `resetSession()` — which also clears the current chat.
+    func applyInstructions() {
+        let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        instructions = trimmed
+        instructionsDraft = trimmed
+        resetSession()
+    }
+
     /// Resets the current session to initial values.
     ///
     /// This function resets the current session by reseting all variables to their initial values.
