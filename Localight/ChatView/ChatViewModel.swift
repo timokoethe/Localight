@@ -61,7 +61,7 @@ import FoundationModels
     init() {
         let defaultInstructions = "Act as the best buddie. Keep your answer short."
         self.session = LanguageModelSession(instructions: defaultInstructions)
-        self.options = GenerationOptions(sampling: .greedy, temperature: 2.0)
+        self.options = GenerationOptions(samplingMode: .greedy, temperature: 2.0)
         self.instructions = defaultInstructions
         self.instructionsDraft = defaultInstructions
         self.temperature = 2.0
@@ -88,8 +88,8 @@ import FoundationModels
         prompt = inputText
         inputText = ""
         do {
-            let response = try await session.respond(to: prompt).content
-            let message = Message(text: response, sender: .model)
+            let response = try await session.respond(to: prompt)
+            let message = Message(text: response.content, sender: .model)
             messages.append(message)
         } catch {
             let message = Message(text: error.localizedDescription, sender: .model)
@@ -117,8 +117,8 @@ import FoundationModels
                 self.streamingResponse = chunk.content
             }
             
-            let response = try await stream.collect().content
-            let message = Message(text: response, sender: .model)
+            let response = try await stream.collect()
+            let message = Message(text: response.content, sender: .model)
             messages.append(message)
         } catch {
             let message = Message(text: error.localizedDescription, sender: .model)
@@ -146,7 +146,7 @@ import FoundationModels
     /// This function resets the current session by reseting all variables to their initial values.
     func resetSession() {
         self.session = LanguageModelSession(instructions: self.instructions)
-        self.options = GenerationOptions(sampling: .greedy, temperature: self.temperature)
+        self.options = GenerationOptions(samplingMode: .greedy, temperature: self.temperature)
         self.inputText = ""
         self.prompt = ""
         self.isResponding = false

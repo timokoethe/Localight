@@ -2,13 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-orange)](https://opensource.org/license/mit)
 ![Framework](https://img.shields.io/badge/SwiftUI-orange)
-![Swift](https://img.shields.io/badge/Swift-6-orange)
 ![Platform](https://img.shields.io/badge/Platforms-iOS-orange)
-![Xcode](https://img.shields.io/badge/Xcode-26-orange)
-![iOS](https://img.shields.io/badge/iOS-26-orange)
+![Xcode](https://img.shields.io/badge/Xcode-26+27-orange)
+![iOS](https://img.shields.io/badge/iOS-26+27-orange)
 ![Apple](https://img.shields.io/badge/Apple-000000?style=flat&logo=apple)
 
-**Localight** is a simple SwiftUI chatbot app for iOS 26, powered entirely by Apple’s on-device Foundation Models. Designed for demonstration purposes, Localight offers fast, private, and completely offline AI chat — no internet connection or server required.
+**Localight** is a simple SwiftUI chatbot app for iOS 26 and iOS 27, powered entirely by Apple’s on-device Foundation Models. Designed for demonstration purposes, Localight offers fast, private, and completely offline AI chat — no internet connection or server required.
 
 Localight showcases how to integrate Apple's local LLM into a native iOS experience using SwiftUI and the new [Foundation Models](https://developer.apple.com/documentation/foundationmodels) framework.
 

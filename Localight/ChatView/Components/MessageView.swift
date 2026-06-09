@@ -29,7 +29,7 @@ struct MessageView: View {
             Text(message.text)
                 .foregroundStyle(message.sender == .user ? .white : .primary)
                 .padding(12)
-                .background(message.sender == .user ? .purple : .clear)
+                .background(message.sender == .user ? Color("Tint") : .clear)
                 .background(.thinMaterial)
                 .clipShape(.rect(cornerRadius: 15))
                 .containerRelativeFrame(.horizontal, alignment: message.sender == .model ? .leading : .trailing) { len, _  in
