@@ -44,6 +44,16 @@ struct SettingsView: View {
                 } footer: {
                     Text("Instructions guide the model’s behavior and tone for all responses. Saving applies a new system prompt and clears the current chat.")
                 }
+                
+                Section {
+                    HStack {
+                        Text("Context Size")
+                        Spacer()
+                        Text(vm.contextSize.description)
+                    }
+                } footer: {
+                    Text("The maximum context size in tokens supported by the model.")
+                }
 
                 Section {
                     HStack {

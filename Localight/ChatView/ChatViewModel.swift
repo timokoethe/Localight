@@ -42,6 +42,7 @@ import FoundationModels
     var instructions: String        // The instructions to the model of how it should respond and behave.
     var instructionsDraft: String   // The in-progress edit of the system prompt, applied on confirmation.
     var temperature: Double         // The temperature to increase creativity.
+    let contextSize: Int            // The model's maximum context size in tokens.
     var samplingMode: GenerationOptions.SamplingMode
     var inputText: String           // The text currently entered by the user.
     var prompt: String              // The finalized user input sent to the model.
@@ -65,6 +66,7 @@ import FoundationModels
         self.instructions = defaultInstructions
         self.instructionsDraft = defaultInstructions
         self.temperature = 2.0
+        self.contextSize = SystemLanguageModel.default.contextSize
         self.samplingMode = .greedy
         self.inputText = ""
         self.prompt = ""
