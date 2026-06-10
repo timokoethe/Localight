@@ -12,16 +12,20 @@ import FoundationModels
 @Observable class ChatViewModel_27 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
+    private var accumulatedInputTokens = 0
+    private var accumulatedOutputTokens = 0
 
     var instructions: String
     var instructionsDraft: String
     var temperature: Double
     let contextSize: Int
+    var contextTokensUsed: Int
     var samplingMode: GenerationOptions.SamplingMode
     var inputText: String
     var prompt: String
     var isResponding: Bool
     var isStreaming: Bool
+    var showsMessageTokenUsage: Bool
     var messages: [Message_27]
     var streamingResponse: String
 
@@ -38,35 +42,42 @@ import FoundationModels
         self.instructionsDraft = defaultInstructions
         self.temperature = 2.0
         self.contextSize = SystemLanguageModel.default.contextSize
+        self.contextTokensUsed = 0
         self.samplingMode = .greedy
         self.inputText = ""
         self.prompt = ""
         self.isResponding = false
         self.isStreaming = false
+        self.showsMessageTokenUsage = true
         self.messages = []
         self.streamingResponse = ""
+        if #available(iOS 27.0, *) {
+            Task {
+                await updateInstructionTokenCount()
+            }
+        }
     }
 
     func getResponse() async {
-        isResponding = true
-        messages.append(Message_27(text: inputText, sender: .user))
-        prompt = inputText
-        inputText = ""
+        await preparePrompt()
+        var modelMessageIndex: Int?
         do {
             let response = try await session.respond(to: prompt)
             messages.append(Message_27(text: response.content, sender: .model))
+            modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
             messages.append(Message_27(text: error.localizedDescription, sender: .model))
         }
         isResponding = false
+        if #available(iOS 27.0, *) {
+            updateTokenUsage(for: modelMessageIndex)
+        }
     }
 
     func streamResponse() async {
-        isResponding = true
-        messages.append(Message_27(text: inputText, sender: .user))
-        prompt = inputText
-        inputText = ""
+        await preparePrompt()
         let stream = session.streamResponse(to: prompt)
+        var modelMessageIndex: Int?
         do {
             for try await chunk in stream {
                 streamingResponse = chunk.content
@@ -74,11 +85,15 @@ import FoundationModels
 
             let response = try await stream.collect()
             messages.append(Message_27(text: response.content, sender: .model))
+            modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
             messages.append(Message_27(text: error.localizedDescription, sender: .model))
         }
         streamingResponse = ""
         isResponding = false
+        if #available(iOS 27.0, *) {
+            updateTokenUsage(for: modelMessageIndex)
+        }
     }
 
     func applyInstructions() {
@@ -97,5 +112,65 @@ import FoundationModels
         isStreaming = false
         messages = []
         streamingResponse = ""
+        contextTokensUsed = 0
+        accumulatedInputTokens = 0
+        accumulatedOutputTokens = 0
+        if #available(iOS 27.0, *) {
+            Task {
+                await updateInstructionTokenCount()
+            }
+        }
+    }
+
+    private func preparePrompt() async {
+        isResponding = true
+        messages.append(Message_27(text: inputText, sender: .user))
+        let messageIndex = messages.index(before: messages.endIndex)
+        prompt = inputText
+        inputText = ""
+
+        if #available(iOS 27.0, *) {
+            messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
+                for: prompt
+            )
+        }
+    }
+
+    @available(iOS 27.0, *)
+    private func updateInstructionTokenCount() async {
+        let tokenCount = try? await SystemLanguageModel.default.tokenCount(
+            for: Instructions(instructions)
+        )
+        if messages.isEmpty {
+            contextTokensUsed = tokenCount ?? 0
+        }
+    }
+
+    @available(iOS 27.0, *)
+    private func updateTokenUsage(for messageIndex: Int?) {
+        updateTokenUsage(for: messageIndex, using: session.usage)
+    }
+
+    @available(iOS 27.0, *)
+    private func updateTokenUsage(
+        for messageIndex: Int?,
+        using usage: LanguageModelSession.Usage
+    ) {
+        let inputTokens = usage.input.totalTokenCount
+        let outputTokens = usage.output.totalTokenCount
+
+        let newInputTokens = inputTokens - accumulatedInputTokens
+        let newOutputTokens = outputTokens - accumulatedOutputTokens
+        accumulatedInputTokens = inputTokens
+        accumulatedOutputTokens = outputTokens
+
+        guard newInputTokens + newOutputTokens > 0 else {
+            return
+        }
+
+        contextTokensUsed = newInputTokens + newOutputTokens
+        if let messageIndex {
+            messages[messageIndex].tokenCount = newOutputTokens
+        }
     }
 }

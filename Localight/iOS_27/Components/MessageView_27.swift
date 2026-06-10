@@ -12,6 +12,7 @@ struct MessageView_27: View {
     @State private var pop = false
 
     let message: Message_27
+    let showsTokenUsage: Bool
     private let generator = UIImpactFeedbackGenerator(style: .medium)
     private let uiPasteboard = UIPasteboard.general
 
@@ -21,18 +22,26 @@ struct MessageView_27: View {
                 Spacer()
             }
 
-            Text(message.text)
-                .foregroundStyle(message.sender == .user ? .white : .primary)
-                .padding(12)
-                .background(message.sender == .user ? Color("Tint") : .clear)
-                .background(.thinMaterial)
-                .clipShape(.rect(cornerRadius: 15))
-                .containerRelativeFrame(
-                    .horizontal,
-                    alignment: message.sender == .model ? .leading : .trailing
-                ) { length, _ in
-                    length / 1.2
+            VStack(alignment: message.sender == .model ? .leading : .trailing) {
+                Text(message.text)
+                    .foregroundStyle(message.sender == .user ? .white : .primary)
+                    .padding(12)
+                    .background(message.sender == .user ? Color("Tint") : .clear)
+                    .background(.thinMaterial)
+                    .clipShape(.rect(cornerRadius: 15))
+
+                if showsTokenUsage, let tokenCount = message.tokenCount {
+                    Text("\(tokenCount) \(message.sender == .user ? "input" : "output") tokens")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
+            }
+            .containerRelativeFrame(
+                .horizontal,
+                alignment: message.sender == .model ? .leading : .trailing
+            ) { length, _ in
+                length / 1.2
+            }
 
             if message.sender == .model {
                 Spacer()
@@ -56,6 +65,12 @@ struct MessageView_27: View {
 }
 
 #Preview {
-    MessageView_27(message: Message_27(text: "Hi there!", sender: .user))
-    MessageView_27(message: Message_27(text: "Hi there!", sender: .model))
+    MessageView_27(
+        message: Message_27(text: "Hi there!", sender: .user, tokenCount: 8),
+        showsTokenUsage: true
+    )
+    MessageView_27(
+        message: Message_27(text: "Hi there!", sender: .model, tokenCount: 12),
+        showsTokenUsage: true
+    )
 }

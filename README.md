@@ -21,6 +21,34 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
 - 💬 **Minimalist Chat UI**: Clean SwiftUI interface for interacting with the model.
 - 🗑️ **No history**: Conversation is not saved after closing the app.
 
+### Feature Matrix
+
+| Feature | iOS 26 | iOS 27 |
+| --- | :---: | :---: |
+| On-device responses | ✅ | ✅ |
+| Response streaming | ✅ | ✅ |
+| Editable model instructions | ✅ | ✅ |
+| Current context usage | ❌ | ✅ |
+| Per-message token usage | ❌ | ✅ |
+| Model availability fallback | ✅ | ✅ |
+| Clear chat session | ✅ | ✅ |
+| Local-only, non-persistent chat | ✅ | ✅ |
+
+## 📁 Project Structure
+
+Localight keeps separate implementations for each supported iOS version:
+
+```text
+Localight/
+├── ContentView_26.swift
+├── ContentView_27.swift
+├── iOS_26/              # iOS 26 chat, model, settings, and components
+├── iOS_27/              # iOS 27 chat, model, settings, and components
+└── LocalightApp.swift   # Selects the implementation for the current iOS version
+```
+
+Version-specific files and types use the `_26` or `_27` suffix.
+
 ## 🛠 Manual
 
 - **Import the Library**: To work with [Foundation Models](https://developer.apple.com/documentation/foundationmodels), you must import the library in every file where you intend to use them. Go with:
@@ -31,7 +59,7 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
 
 - **Check Availability**: The key object is the [SystemLanguageModel](https://developer.apple.com/documentation/foundationmodels/systemlanguagemodel). This can indicate whether the model is ```.available``` or ```.unavailable```. In case of unavailability, a reason is also provided.
 
-- **Create a LanguageModelSession**: To start prompting, you need to create a [LanguageModelSession](https://developer.apple.com/documentation/foundationmodels/languagemodelsession). When you create a session you can provide instructions that tells the model what its role is and provides guidance on how to respond. These instructions should never be editable by the user:
+- **Create a LanguageModelSession**: To start prompting, create a [LanguageModelSession](https://developer.apple.com/documentation/foundationmodels/languagemodelsession). Its instructions define the model’s role and response behavior:
 
     ```swift
     let session = LanguageModelSession(instructions: "You are the best friend.")
@@ -61,13 +89,14 @@ Localight showcases how to integrate Apple's local LLM into a native iOS experie
 
 Apple’s on-device Foundation Models operate with a limited context window per session.
 The context window defines how many tokens the model can process within a single ```LanguageModelSession```.
+On iOS 27, the displayed usage includes the system instructions.
 
 - A token is a unit of text processed by the model.
 - In Western languages (e.g. English or German), 1 token ≈ 3–4 characters.
 - In East Asian languages (e.g. Japanese or Chinese), 1 token ≈ 1 character.
 - The system model currently supports up to **4,096 tokens** per session.
 
-If this limit is exceeded, the framework throws the following error: ```LanguageModelSession.GenerationError.exceededContextWindowSize(_:)```
+If this limit is exceeded, the framework throws the following error: ```LanguageModelError.contextSizeExceeded(_:)```
 
 For more details, see Apple’s official documentation:
 [TN3193 – Managing the on-device foundation model’s context window](https://developer.apple.com/documentation/technotes/tn3193-managing-the-on-device-foundation-model-s-context-window)

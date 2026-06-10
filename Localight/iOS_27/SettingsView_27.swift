@@ -18,8 +18,12 @@ struct SettingsView_27: View {
                 Section {
                     Toggle("Stream responses", isOn: $vm.isStreaming)
                         .tint(Color("Tint"))
+                    Toggle("Show token usage", isOn: $vm.showsMessageTokenUsage)
+                        .tint(Color("Tint"))
+                } header: {
+                    Text("Chat")
                 } footer: {
-                    Text("Streams output as it’s generated. Turn off to show the full response at once.")
+                    Text("Controls response streaming and per-message token usage.")
                 }
 
                 Section {
@@ -37,13 +41,13 @@ struct SettingsView_27: View {
                 }
 
                 Section {
-                    HStack {
-                        Text("Context Size")
-                        Spacer()
-                        Text(vm.contextSize.description)
-                    }
+                    ProgressView(
+                        value: Double(vm.contextTokensUsed),
+                        total: Double(vm.contextSize)
+                    )
+                    Text("\(vm.contextTokensUsed) / \(vm.contextSize) tokens")
                 } footer: {
-                    Text("The maximum context size in tokens supported by the model.")
+                    Text("The context window used by the current chat.")
                 }
 
                 Section {

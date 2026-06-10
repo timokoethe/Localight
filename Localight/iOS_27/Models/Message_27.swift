@@ -13,6 +13,7 @@ struct Message_27: Identifiable {
     var date = Date()
     var text: String
     var sender: Sender_27
+    var tokenCount: Int? = nil
 }
 
 enum Sender_27 {

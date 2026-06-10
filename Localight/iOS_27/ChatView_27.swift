@@ -16,7 +16,10 @@ struct ChatView_27: View {
             VStack {
                 ScrollView {
                     ForEach(vm.messages) { message in
-                        MessageView_27(message: message)
+                        MessageView_27(
+                            message: message,
+                            showsTokenUsage: vm.showsMessageTokenUsage
+                        )
                     }
 
                     if vm.isResponding && !vm.isStreaming {
@@ -33,7 +36,8 @@ struct ChatView_27: View {
                                 message: Message_27(
                                     text: vm.streamingResponse,
                                     sender: .model
-                                )
+                                ),
+                                showsTokenUsage: vm.showsMessageTokenUsage
                             )
                             Spacer()
                         }
