@@ -1,25 +1,16 @@
 //
-//  SettingsView.swift
+//  SettingsView_27.swift
 //  Localight
 //
-//  Created by Timo Köthe on 10.01.26.
+//  Created by Timo Köthe on 10.06.26.
 //
 
 import SwiftUI
 
-/// A view that displays information for the chat experience, including response streaming,
-/// model instructions, and temperature (creativity) parameters.
-///
-/// The model instructions (system prompt) can be edited inline. Because Foundation Models
-/// fixes a session’s instructions at creation time, applying a new system prompt rebuilds
-/// the session and therefore clears the current chat guarded by a confirmation dialog.
-///
-/// Data is bound to the provided `ChatViewModel`.
-struct SettingsView: View {
-    @Bindable var vm: ChatViewModel
-
-    /// Controls the presentation of the save confirmation dialog.
-    @State private var showsSaveConfirmation: Bool = false
+/// Displays chat and model settings for iOS 27.
+struct SettingsView_27: View {
+    @Bindable var vm: ChatViewModel_27
+    @State private var showsSaveConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -44,7 +35,7 @@ struct SettingsView: View {
                 } footer: {
                     Text("Instructions guide the model’s behavior and tone for all responses. Saving applies a new system prompt and clears the current chat.")
                 }
-                
+
                 Section {
                     HStack {
                         Text("Context Size")
@@ -83,5 +74,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(vm: ChatViewModel())
+    SettingsView_27(vm: ChatViewModel_27())
 }

@@ -1,5 +1,5 @@
 //
-//  ChatView.swift
+//  ChatView_26.swift
 //  Localight
 //
 //  Created by Timo Köthe on 07.07.25.
@@ -7,23 +7,23 @@
 
 import SwiftUI
 
-/// A view that presents the main chat interface, featuring a scrollable list of messages
+/// The iOS 26 chat view, featuring a scrollable list of messages
 /// and an input bar for composing new ones.
 ///
 /// The layout is organized vertically: messages appear in a scrollable area,
 /// while the input bar remains fixed at the bottom for quick interaction.
-/// A progress indicator is shown as long as the model generates a response.
+/// A progress indicator is shown while a non-streamed response is generated.
 /// This view serves as the primary screen for chat-based interactions.
 /// Messages are not persisted and will be lost once the application is closed.
-struct ChatView: View {
-    @State private var vm = ChatViewModel()
+struct ChatView_26: View {
+    @State private var vm = ChatViewModel_26()
     
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
                     ForEach(vm.messages) { message in
-                        MessageView(message: message)
+                        MessageView_26(message: message)
                     }
                     
                     // Shows a progress indicator as long as the model generates and is not streaming a response
@@ -38,7 +38,7 @@ struct ChatView: View {
                     // Shows a response stream as long as the model streams a response
                     if vm.isResponding && vm.isStreaming {
                         HStack {
-                            MessageView(message: Message(text: vm.streamingResponse, sender: .model))
+                            MessageView_26(message: Message_26(text: vm.streamingResponse, sender: .model))
                             Spacer()
                         }
                     }
@@ -46,7 +46,7 @@ struct ChatView: View {
                 .scrollBounceBehavior(.basedOnSize)
                 .defaultScrollAnchor(.bottom)
                 .safeAreaInset(edge: .bottom, spacing: 0) {
-                    TypebarView(vm: vm)
+                    TypebarView_26(vm: vm)
                 }
 
             }
@@ -59,7 +59,7 @@ struct ChatView: View {
                 
                 // Shows a button for navigating to the settings
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: SettingsView(vm: vm)) {
+                    NavigationLink(destination: SettingsView_26(vm: vm)) {
                         Image(systemName: "gear")
                     }
                     .disabled(vm.isResponding)
@@ -70,5 +70,5 @@ struct ChatView: View {
 }
 
 #Preview {
-    ChatView()
+    ChatView_26()
 }

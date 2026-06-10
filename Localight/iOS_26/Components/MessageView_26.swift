@@ -1,5 +1,5 @@
 //
-//  MessageView.swift
+//  MessageView_26.swift
 //  Localight
 //
 //  Created by Timo Köthe on 08.07.25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A view that displays a single chat message within the conversation.
+/// The iOS 26 view for a single chat message.
 ///
 /// The message is styled differently depending on the sender:
 /// - **User messages** are right-aligned with a colored background and white text.
@@ -15,10 +15,10 @@ import SwiftUI
 ///
 /// Messages are presented inside a padded and rounded container for readability.
 /// This view is used as a building block within the main chat interface.
-struct MessageView: View {
+struct MessageView_26: View {
     @State private var pop = false
     
-    let message: Message
+    let message: Message_26
     private let generator: UIImpactFeedbackGenerator = .init(style: .medium)
     private let uiPasteboard: UIPasteboard = UIPasteboard.general
         
@@ -56,8 +56,8 @@ struct MessageView: View {
 }
 
 #Preview {
-    MessageView(message: Message(text: "Hi there!", sender: .user))
-    MessageView(message: Message(text: "Hi there!", sender: .model))
-    MessageView(message: Message(text: "This is a message from the model, which is very long for demonstration purposes only.", sender: .model))
-    MessageView(message: Message(text: "This is a message from the user, which is very long for demonstration purposes only.", sender: .user))
+    MessageView_26(message: Message_26(text: "Hi there!", sender: .user))
+    MessageView_26(message: Message_26(text: "Hi there!", sender: .model))
+    MessageView_26(message: Message_26(text: "This is a message from the model, which is very long for demonstration purposes only.", sender: .model))
+    MessageView_26(message: Message_26(text: "This is a message from the user, which is very long for demonstration purposes only.", sender: .user))
 }

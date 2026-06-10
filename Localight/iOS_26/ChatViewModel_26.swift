@@ -1,5 +1,5 @@
 //
-//  ChatViewModel.swift
+//  ChatViewModel_26.swift
 //  Localight
 //
 //  Created by Timo Köthe on 07.07.25.
@@ -8,7 +8,7 @@
 import Foundation
 import FoundationModels
 
-/// `ChatViewModel` is an observable class that manages the state and logic for a chat interface utilizing a language model session.
+/// `ChatViewModel_26` manages the iOS 26 chat state and language model session.
 ///
 /// Responsibilities include:
 /// - Managing user input and chat messages.
@@ -34,8 +34,8 @@ import FoundationModels
 /// - `getResponse()`: Asynchronously sends the current prompt to the language model and appends both user and model messages to the chat, handling errors gracefully.
 /// - `streamResponse()`: Asynchronously sends the current prompt to the language model and streams the models response to the chat while being generated, handling errors gracefully.
 /// - `applyInstructions()`: Applies the edited draft as the new system prompt and rebuilds the session (clearing the chat).
-/// - `resetSession()`: Resets the current language model session by setting all variables to their initial values.
-@Observable class ChatViewModel {
+/// - `resetSession()`: Rebuilds the session and clears the current chat state.
+@Observable class ChatViewModel_26 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
 
@@ -48,7 +48,7 @@ import FoundationModels
     var prompt: String              // The finalized user input sent to the model.
     var isResponding: Bool          // Indicates whether the model is generating a response.
     var isStreaming: Bool           // Indicates whether a response should be streamed to the UI or not.
-    var messages: [Message]         // A collection of all messages displayed in the chat view.
+    var messages: [Message_26]      // A collection of all messages displayed in the iOS 26 chat view.
     var streamingResponse: String
 
     /// Whether the draft differs from the active instructions and is non-empty,
@@ -80,21 +80,21 @@ import FoundationModels
     ///
     /// This function handles the full request–response cycle:
     /// - Marks the view as busy (`isResponding = true`)
-    /// - Appends the user’s input as a message to be shown on the ChatView
+    /// - Appends the user’s input as a message to be shown on `ChatView_26`
     /// - Sends the finalized prompt to the model
     /// - Awaits the model’s response, or an error message if the request fails
     /// - Resets the state to indicate the response cycle has finished
     func getResponse() async {
         isResponding = true
-        messages.append(Message(text: inputText, sender: .user))
+        messages.append(Message_26(text: inputText, sender: .user))
         prompt = inputText
         inputText = ""
         do {
             let response = try await session.respond(to: prompt)
-            let message = Message(text: response.content, sender: .model)
+            let message = Message_26(text: response.content, sender: .model)
             messages.append(message)
         } catch {
-            let message = Message(text: error.localizedDescription, sender: .model)
+            let message = Message_26(text: error.localizedDescription, sender: .model)
             messages.append(message)
         }
         isResponding = false
@@ -104,13 +104,13 @@ import FoundationModels
     ///
     /// This function handles the full request–response cycle:
     /// - Marks the view as busy (`isResponding = true`)
-    /// - Appends the user’s input as a message to be shown on the ChatView
+    /// - Appends the user’s input as a message to be shown on `ChatView_26`
     /// - Sends the finalized prompt to the model
     /// - Streams the model’s response, or appends an error message if the request fails
     /// - Resets the state to indicate the response cycle has finished
     func streamResponse() async {
         isResponding = true
-        messages.append(Message(text: inputText, sender: .user))
+        messages.append(Message_26(text: inputText, sender: .user))
         prompt = inputText
         inputText = ""
         let stream = session.streamResponse(to: prompt)
@@ -120,10 +120,10 @@ import FoundationModels
             }
             
             let response = try await stream.collect()
-            let message = Message(text: response.content, sender: .model)
+            let message = Message_26(text: response.content, sender: .model)
             messages.append(message)
         } catch {
-            let message = Message(text: error.localizedDescription, sender: .model)
+            let message = Message_26(text: error.localizedDescription, sender: .model)
             messages.append(message)
         }
         streamingResponse = ""
@@ -143,9 +143,7 @@ import FoundationModels
         resetSession()
     }
 
-    /// Resets the current session to initial values.
-    ///
-    /// This function resets the current session by reseting all variables to their initial values.
+    /// Rebuilds the session and clears the current chat state.
     func resetSession() {
         self.session = LanguageModelSession(instructions: self.instructions)
         self.options = GenerationOptions(samplingMode: .greedy, temperature: self.temperature)

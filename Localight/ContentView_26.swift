@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  ContentView_26.swift
 //  Localight
 //
 //  Created by Timo Köthe on 06.07.25.
@@ -8,11 +8,11 @@
 import SwiftUI
 import FoundationModels
 
-/// The app’s root view.
+/// The iOS 26 app root view.
 ///
 /// Displays the chat interface when the on-device language model is available.
 /// Otherwise, it presents a fallback screen explaining why the model cannot be used.
-struct ContentView: View {
+struct ContentView_26: View {
     // Create a reference to the system language model.
     private var model = SystemLanguageModel.default
     
@@ -20,7 +20,7 @@ struct ContentView: View {
         // Checks the local model's availability
         switch model.availability {
         case .available:
-            ChatView()
+            ChatView_26()
                 .tabItem {
                     Label("Chat", systemImage: "message")
                 }
@@ -37,5 +37,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView_26()
 }

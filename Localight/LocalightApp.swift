@@ -7,12 +7,16 @@
 
 import SwiftUI
 
-/// The main entry point of the app, presenting `ContentView` in the main window.
+/// The main entry point, selecting the iOS 26 or iOS 27 interface.
 @main
 struct LocalightApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if #available(iOS 27.0, *) {
+                ContentView_27()
+            } else {
+                ContentView_26()
+            }
         }
     }
 }
