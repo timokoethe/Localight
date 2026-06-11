@@ -55,6 +55,7 @@ import FoundationModels
         self.showsMessageTokenUsage = true
         self.messages = []
         self.streamingResponse = ""
+        self.session.prewarm()
         if #available(iOS 27.0, *) {
             Task {
                 await updateInstructionTokenCount()

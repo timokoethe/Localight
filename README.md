@@ -37,6 +37,7 @@ See [Introducing the Third Generation of Apple’s Foundation Models](https://ma
 | --- | :---: | :---: |
 | On-device responses | ✅ | ✅ |
 | Response streaming | ✅ | ✅ |
+| Session prewarming | ✅ | ✅ |
 | Editable model instructions | ✅ | ✅ |
 | Adjustable model temperature | ✅ | ✅ |
 | Current context usage | ❌ | ✅ |

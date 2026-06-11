@@ -80,6 +80,7 @@ import FoundationModels
         self.isStreaming = false
         self.messages = []
         self.streamingResponse = ""
+        self.session.prewarm()
     }
     
     /// Generates a response from the model based on the user’s current input.
