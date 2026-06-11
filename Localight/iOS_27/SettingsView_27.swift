@@ -11,6 +11,7 @@ import SwiftUI
 struct SettingsView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var showsSaveConfirmation = false
+    @State private var showsTemperatureConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -51,13 +52,28 @@ struct SettingsView_27: View {
                 }
 
                 Section {
-                    HStack {
-                        Text("Temperature:")
-                        Spacer()
-                        Text(vm.temperature.description)
+                    Slider(value: $vm.temperatureDraft, in: 0...1, step: 0.1) {
+                        Text("Temperature")
+                    } minimumValueLabel: {
+                        Text("0")
+                    } maximumValueLabel: {
+                        Text("1")
                     }
+
+                    HStack {
+                        Text("Selected value")
+                        Spacer()
+                        Text(vm.temperatureDraft, format: .number.precision(.fractionLength(1)))
+                    }
+
+                    Button("Save") {
+                        showsTemperatureConfirmation = true
+                    }
+                    .disabled(!vm.hasTemperatureChanges)
+                } header: {
+                    Text("Temperature")
                 } footer: {
-                    Text("Controls how creative the model is. Lower values are more consistent, higher values are more varied.")
+                    Text("Controls how creative the model is. Saving starts a fresh session and clears the current chat.")
                 }
             }
             .navigationTitle("Information")
@@ -72,6 +88,17 @@ struct SettingsView_27: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Applying a new system prompt starts a fresh session and clears the current chat.")
+            }
+            .alert(
+                "Save new temperature?",
+                isPresented: $showsTemperatureConfirmation
+            ) {
+                Button("Save", role: .destructive) {
+                    vm.applyTemperature()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Applying a new temperature starts a fresh session and clears the current chat.")
             }
         }
     }

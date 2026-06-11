@@ -18,9 +18,9 @@ import FoundationModels
     var instructions: String
     var instructionsDraft: String
     var temperature: Double
+    var temperatureDraft: Double
     let contextSize: Int
     var contextTokensUsed: Int
-    var samplingMode: GenerationOptions.SamplingMode
     var inputText: String
     var prompt: String
     var isResponding: Bool
@@ -34,16 +34,20 @@ import FoundationModels
         return !trimmed.isEmpty && trimmed != instructions
     }
 
+    var hasTemperatureChanges: Bool {
+        temperatureDraft != temperature
+    }
+
     init() {
         let defaultInstructions = "Act as the best buddie. Keep your answer short."
         self.session = LanguageModelSession(instructions: defaultInstructions)
-        self.options = GenerationOptions(samplingMode: .greedy, temperature: 2.0)
+        self.options = GenerationOptions(temperature: 1.0)
         self.instructions = defaultInstructions
         self.instructionsDraft = defaultInstructions
-        self.temperature = 2.0
+        self.temperature = 1.0
+        self.temperatureDraft = 1.0
         self.contextSize = SystemLanguageModel.default.contextSize
         self.contextTokensUsed = 0
-        self.samplingMode = .greedy
         self.inputText = ""
         self.prompt = ""
         self.isResponding = false
@@ -62,7 +66,7 @@ import FoundationModels
         await preparePrompt()
         var modelMessageIndex: Int?
         do {
-            let response = try await session.respond(to: prompt)
+            let response = try await session.respond(to: prompt, options: options)
             messages.append(Message_27(text: response.content, sender: .model))
             modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
@@ -76,7 +80,7 @@ import FoundationModels
 
     func streamResponse() async {
         await preparePrompt()
-        let stream = session.streamResponse(to: prompt)
+        let stream = session.streamResponse(to: prompt, options: options)
         var modelMessageIndex: Int?
         do {
             for try await chunk in stream {
@@ -103,9 +107,14 @@ import FoundationModels
         resetSession()
     }
 
+    func applyTemperature() {
+        temperature = temperatureDraft
+        resetSession()
+    }
+
     func resetSession() {
         session = LanguageModelSession(instructions: instructions)
-        options = GenerationOptions(samplingMode: .greedy, temperature: temperature)
+        options = GenerationOptions(temperature: temperature)
         inputText = ""
         prompt = ""
         isResponding = false
