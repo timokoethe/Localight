@@ -26,6 +26,9 @@ import FoundationModels
     var isResponding: Bool
     var isStreaming: Bool
     var showsMessageTokenUsage: Bool
+    var showsGenerationError: Bool
+    var generationErrorTitle: String
+    var generationErrorMessage: String
     var messages: [Message_27]
     var streamingResponse: String
 
@@ -53,6 +56,9 @@ import FoundationModels
         self.isResponding = false
         self.isStreaming = false
         self.showsMessageTokenUsage = true
+        self.showsGenerationError = false
+        self.generationErrorTitle = ""
+        self.generationErrorMessage = ""
         self.messages = []
         self.streamingResponse = ""
         self.session.prewarm()
@@ -66,14 +72,18 @@ import FoundationModels
     func getResponse() async {
         await preparePrompt()
         var modelMessageIndex: Int?
+        defer {
+            isResponding = false
+        }
+
         do {
             let response = try await session.respond(to: prompt, options: options)
             messages.append(Message_27(text: response.content, sender: .model))
             modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
-            messages.append(Message_27(text: error.localizedDescription, sender: .model))
+            presentGenerationError(error)
         }
-        isResponding = false
+
         if #available(iOS 27.0, *) {
             updateTokenUsage(for: modelMessageIndex)
         }
@@ -83,6 +93,11 @@ import FoundationModels
         await preparePrompt()
         let stream = session.streamResponse(to: prompt, options: options)
         var modelMessageIndex: Int?
+        defer {
+            streamingResponse = ""
+            isResponding = false
+        }
+
         do {
             for try await chunk in stream {
                 streamingResponse = chunk.content
@@ -92,10 +107,9 @@ import FoundationModels
             messages.append(Message_27(text: response.content, sender: .model))
             modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
-            messages.append(Message_27(text: error.localizedDescription, sender: .model))
+            presentGenerationError(error)
         }
-        streamingResponse = ""
-        isResponding = false
+
         if #available(iOS 27.0, *) {
             updateTokenUsage(for: modelMessageIndex)
         }
@@ -120,6 +134,9 @@ import FoundationModels
         prompt = ""
         isResponding = false
         isStreaming = false
+        showsGenerationError = false
+        generationErrorTitle = ""
+        generationErrorMessage = ""
         messages = []
         streamingResponse = ""
         contextTokensUsed = 0
@@ -144,6 +161,75 @@ import FoundationModels
                 for: prompt
             )
         }
+    }
+
+    private func presentGenerationError(_ error: Error) {
+        let errorMessage = generationErrorMessage(for: error)
+        generationErrorTitle = errorMessage.title
+        generationErrorMessage = errorMessage.message
+        showsGenerationError = true
+    }
+
+    private func generationErrorMessage(for error: Error) -> (title: String, message: String) {
+        if #available(iOS 27.0, *), let languageModelError = error as? LanguageModelError {
+            switch languageModelError {
+            case .contextSizeExceeded(_):
+                return (
+                    "Context window exceeded",
+                    "The current chat is too long for the on-device model. Clear the chat or shorten the prompt before trying again."
+                )
+            case .rateLimited(_):
+                return (
+                    "Model is rate limited",
+                    "The session is temporarily rate limited. Wait a moment, then try again."
+                )
+            case .refusal(_):
+                return (
+                    "Model refused",
+                    "The model declined to answer this request."
+                )
+            case .timeout(_):
+                return (
+                    "Request timed out",
+                    "The model did not finish the response in time. Try a shorter prompt or try again."
+                )
+            case .guardrailViolation(_):
+                return (
+                    "Safety guardrail triggered",
+                    "The prompt or generated response triggered the model's safety guardrails."
+                )
+            case .unsupportedCapability(_):
+                return (
+                    "Unsupported capability",
+                    "The current model does not support a feature required for this request."
+                )
+            case .unsupportedTranscriptContent(_):
+                return (
+                    "Unsupported content",
+                    "The prompt contains content that the model cannot process."
+                )
+            case .unsupportedGenerationGuide(_):
+                return (
+                    "Unsupported generation guide",
+                    "The requested structured output format is not supported by the current model."
+                )
+            case .unsupportedLanguageOrLocale(_):
+                return (
+                    "Unsupported language",
+                    "The model does not support the requested language or locale."
+                )
+            @unknown default:
+                return (
+                    "Model error",
+                    error.localizedDescription
+                )
+            }
+        }
+
+        return (
+            "Response failed",
+            error.localizedDescription
+        )
     }
 
     @available(iOS 27.0, *)

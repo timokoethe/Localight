@@ -42,6 +42,7 @@ See [Introducing the Third Generation of Apple’s Foundation Models](https://ma
 | Adjustable model temperature | ✅ | ✅ |
 | Current context usage | ❌ | ✅ |
 | Per-message token usage | ❌ | ✅ |
+| Typed generation error alerts | ❌ | ✅ |
 | Model availability fallback | ✅ | ✅ |
 | Clear chat session | ✅ | ✅ |
 | Local-only, non-persistent chat | ✅ | ✅ |
@@ -96,6 +97,8 @@ Version-specific files and types use the `_26` or `_27` suffix.
         let response = try await stream.collect().content
     } catch {}
     ```
+
+- **Handle Generation Errors**: On iOS 27, Localight maps `LanguageModelError` cases such as context-size, rate-limit, timeout, refusal, guardrail, and unsupported-content failures to user-facing alerts instead of adding raw framework errors to the chat.
 
 ## 📏 Context Window & Token Limits
 
