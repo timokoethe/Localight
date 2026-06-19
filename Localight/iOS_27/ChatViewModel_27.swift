@@ -7,6 +7,7 @@
 
 import Foundation
 import FoundationModels
+import UIKit
 
 /// Manages the iOS 27 chat state and language model session.
 @Observable class ChatViewModel_27 {
@@ -22,6 +23,7 @@ import FoundationModels
     let contextSize: Int
     var contextTokensUsed: Int
     var inputText: String
+    var attachedImage: UIImage?
     var prompt: String
     var isResponding: Bool
     var isStreaming: Bool
@@ -52,6 +54,7 @@ import FoundationModels
         self.contextSize = SystemLanguageModel.default.contextSize
         self.contextTokensUsed = 0
         self.inputText = ""
+        self.attachedImage = nil
         self.prompt = ""
         self.isResponding = false
         self.isStreaming = false
@@ -70,14 +73,14 @@ import FoundationModels
     }
 
     func getResponse() async {
-        await preparePrompt()
+        let image = await preparePrompt()
         var modelMessageIndex: Int?
         defer {
             isResponding = false
         }
 
         do {
-            let response = try await session.respond(to: prompt, options: options)
+            let response = try await respond(with: image)
             messages.append(Message_27(text: response.content, sender: .model))
             modelMessageIndex = messages.index(before: messages.endIndex)
         } catch {
@@ -90,8 +93,8 @@ import FoundationModels
     }
 
     func streamResponse() async {
-        await preparePrompt()
-        let stream = session.streamResponse(to: prompt, options: options)
+        let image = await preparePrompt()
+        let stream = responseStream(with: image)
         var modelMessageIndex: Int?
         defer {
             streamingResponse = ""
@@ -127,10 +130,19 @@ import FoundationModels
         resetSession()
     }
 
+    func attachImageData(_ data: Data) {
+        attachedImage = UIImage(data: data)
+    }
+
+    func removeAttachment() {
+        attachedImage = nil
+    }
+
     func resetSession() {
         session = LanguageModelSession(instructions: instructions)
         options = GenerationOptions(temperature: temperature)
         inputText = ""
+        attachedImage = nil
         prompt = ""
         isResponding = false
         isStreaming = false
@@ -149,17 +161,44 @@ import FoundationModels
         }
     }
 
-    private func preparePrompt() async {
+    private func preparePrompt() async -> UIImage? {
         isResponding = true
-        messages.append(Message_27(text: inputText, sender: .user))
+        let image = attachedImage
+        let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        messages.append(Message_27(text: trimmedInput, sender: .user, image: image))
         let messageIndex = messages.index(before: messages.endIndex)
-        prompt = inputText
+        prompt = trimmedInput.isEmpty ? "Describe this image." : trimmedInput
         inputText = ""
+        attachedImage = nil
 
         if #available(iOS 27.0, *) {
             messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
                 for: prompt
             )
+        }
+
+        return image
+    }
+
+    private func respond(with image: UIImage?) async throws -> LanguageModelSession.Response<String> {
+        guard #available(iOS 27.0, *), let cgImage = image?.cgImage else {
+            return try await session.respond(to: prompt, options: options)
+        }
+
+        return try await session.respond(options: options) {
+            prompt
+            Attachment<ImageAttachmentContent>(cgImage)
+        }
+    }
+
+    private func responseStream(with image: UIImage?) -> LanguageModelSession.ResponseStream<String> {
+        guard #available(iOS 27.0, *), let cgImage = image?.cgImage else {
+            return session.streamResponse(to: prompt, options: options)
+        }
+
+        return session.streamResponse(options: options) {
+            prompt
+            Attachment<ImageAttachmentContent>(cgImage)
         }
     }
 

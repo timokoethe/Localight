@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// Represents a chat message in the iOS 27 implementation.
 struct Message_27: Identifiable {
@@ -13,6 +14,7 @@ struct Message_27: Identifiable {
     var date = Date()
     var text: String
     var sender: Sender_27
+    var image: UIImage? = nil
     var tokenCount: Int? = nil
 }
 

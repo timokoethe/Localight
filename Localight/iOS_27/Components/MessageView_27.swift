@@ -23,12 +23,25 @@ struct MessageView_27: View {
             }
 
             VStack(alignment: message.sender == .model ? .leading : .trailing) {
-                Text(message.text)
-                    .foregroundStyle(message.sender == .user ? .white : .primary)
-                    .padding(12)
-                    .background(message.sender == .user ? Color("Tint") : .clear)
-                    .background(.thinMaterial)
-                    .clipShape(.rect(cornerRadius: 15))
+                if let image = message.image {
+                    Image(uiImage: image)
+    
+                        .resizable()
+                        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                        .scaledToFit()
+                        .frame(maxWidth: 260, maxHeight: 180, alignment: .trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                VStack(alignment: message.sender == .model ? .leading : .trailing, spacing: 8) {
+                    if !message.text.isEmpty {
+                        Text(message.text)
+                            .foregroundStyle(message.sender == .user ? .white : .primary)
+                    }
+                }
+                .padding(12)
+                .background(message.sender == .user ? Color("Tint") : .clear)
+                .background(.thinMaterial)
+                .clipShape(.rect(cornerRadius: 15))
 
                 if showsTokenUsage, let tokenCount = message.tokenCount {
                     Text("\(tokenCount) \(message.sender == .user ? "input" : "output") tokens")
@@ -71,6 +84,28 @@ struct MessageView_27: View {
     )
     MessageView_27(
         message: Message_27(text: "Hi there!", sender: .model, tokenCount: 12),
+        showsTokenUsage: true
+    )
+}
+
+#Preview("Messages with Images") {
+    MessageView_27(
+        message: Message_27(
+            text: "Landscape attachment",
+            sender: .user,
+            image: UIImage(named: "Landscape"),
+            tokenCount: 12
+        ),
+        showsTokenUsage: true
+    )
+
+    MessageView_27(
+        message: Message_27(
+            text: "Portrait attachment",
+            sender: .user,
+            image: UIImage(named: "Portrait"),
+            tokenCount: 12
+        ),
         showsTokenUsage: true
     )
 }
