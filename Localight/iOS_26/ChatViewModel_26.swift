@@ -37,6 +37,7 @@ import FoundationModels
 /// - `applyInstructions()`: Applies the edited draft as the new system prompt and rebuilds the session (clearing the chat).
 /// - `applyTemperature()`: Applies the edited temperature and rebuilds the session (clearing the chat).
 /// - `resetSession()`: Rebuilds the session and clears the current chat state.
+@MainActor
 @Observable class ChatViewModel_26 {
     private var session: LanguageModelSession
     private var options: GenerationOptions

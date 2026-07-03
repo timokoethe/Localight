@@ -10,6 +10,7 @@ import FoundationModels
 import UIKit
 
 /// Manages the iOS 27 chat state and language model session.
+@MainActor
 @Observable class ChatViewModel_27 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
