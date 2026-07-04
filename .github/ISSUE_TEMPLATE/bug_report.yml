@@ -56,20 +56,20 @@ body:
     id: ios_version
     attributes:
       label: iOS version
-      placeholder: iOS 26.x
+      placeholder: iOS 26.x or 27.x
     validations:
       required: true
   - type: input
     id: xcode_version
     attributes:
       label: Xcode version
-      placeholder: Xcode 26.x
+      placeholder: Xcode 26.x or 27.x
     validations:
       required: false
   - type: dropdown
     id: model_availability
     attributes:
-      label: Foundation Models availability
+      label: Foundation Models availability, if relevant
       description: What did Localight show for the on-device model?
       options:
         - Available
@@ -79,7 +79,7 @@ body:
         - Model unavailable for another reason
         - Not sure
     validations:
-      required: true
+      required: false
   - type: textarea
     id: evidence
     attributes:

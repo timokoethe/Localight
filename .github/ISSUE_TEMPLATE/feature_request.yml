@@ -26,6 +26,9 @@ body:
         - Chat UI
         - Model response generation
         - Streaming responses
+        - Context or token usage
+        - Image attachments
+        - Generation error handling
         - Model availability handling
         - Settings screen
         - Documentation
