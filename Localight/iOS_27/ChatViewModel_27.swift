@@ -304,7 +304,7 @@ import UIKit
             return
         }
 
-        contextTokensUsed = newInputTokens + newOutputTokens
+        contextTokensUsed = inputTokens + outputTokens
         if let messageIndex {
             messages[messageIndex].tokenCount = newOutputTokens
         }
