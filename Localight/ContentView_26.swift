@@ -21,9 +21,6 @@ struct ContentView_26: View {
         switch model.availability {
         case .available:
             ChatView_26()
-                .tabItem {
-                    Label("Chat", systemImage: "message")
-                }
         case .unavailable(.deviceNotEligible):
             ContentUnavailableView("This device is not supported.", systemImage: "nosign")
         case .unavailable(.appleIntelligenceNotEnabled):
