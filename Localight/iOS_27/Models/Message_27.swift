@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 
+#if LOCALIGHT_IOS27_SDK
 /// Represents a chat message in the iOS 27 implementation.
+@available(iOS 27.0, *)
 struct Message_27: Identifiable {
     let id = UUID()
     var date = Date()
@@ -22,3 +24,4 @@ enum Sender_27 {
     case model
     case user
 }
+#endif

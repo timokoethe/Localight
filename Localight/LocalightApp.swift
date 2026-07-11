@@ -12,11 +12,15 @@ import SwiftUI
 struct LocalightApp: App {
     var body: some Scene {
         WindowGroup {
+#if LOCALIGHT_IOS27_SDK
             if #available(iOS 27.0, *) {
                 ContentView_27()
             } else {
                 ContentView_26()
             }
+#else
+            ContentView_26()
+#endif
         }
     }
 }

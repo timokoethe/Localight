@@ -7,7 +7,9 @@
 
 import SwiftUI
 
+#if LOCALIGHT_IOS27_SDK
 /// Displays chat and model settings for iOS 27.
+@available(iOS 27.0, *)
 struct SettingsView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var showsSaveConfirmation = false
@@ -106,6 +108,8 @@ struct SettingsView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     SettingsView_27(vm: ChatViewModel_27())
 }
+#endif

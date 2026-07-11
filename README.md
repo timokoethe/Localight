@@ -63,6 +63,16 @@ Localight/
 
 Version-specific files and types use the `_26` or `_27` suffix.
 
+### SDK and deployment behavior
+
+The deployment target remains iOS 26, so a single app built with the iOS 27 SDK can run on both supported system versions. The project separates SDK availability from runtime availability:
+
+- Builds using an iOS 26 SDK compile only the iOS 26 implementation. This keeps the project buildable even though that SDK does not contain the newer Foundation Models APIs.
+- Builds using an iOS 27 SDK automatically define `LOCALIGHT_IOS27_SDK` and compile both implementations.
+- At runtime, `LocalightApp` uses `#available(iOS 27.0, *)` to select the iOS 27 implementation while retaining the iOS 26 fallback.
+
+The SDK-specific compilation conditions currently match iOS 27.x. When adopting a later major SDK, update the conditional `SWIFT_ACTIVE_COMPILATION_CONDITIONS` entries in the target build settings so the iOS 27 implementation remains enabled.
+
 ## 🛠 Manual
 
 - **Import the Library**: To work with [Foundation Models](https://developer.apple.com/documentation/foundationmodels), you must import the library in every file where you intend to use them. Go with:
