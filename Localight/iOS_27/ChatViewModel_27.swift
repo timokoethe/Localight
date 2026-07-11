@@ -9,8 +9,10 @@ import Foundation
 import FoundationModels
 import UIKit
 
+#if LOCALIGHT_IOS27_SDK
 /// Manages the iOS 27 chat state and language model session.
 @MainActor
+@available(iOS 27.0, *)
 @Observable class ChatViewModel_27 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
@@ -66,10 +68,8 @@ import UIKit
         self.messages = []
         self.streamingResponse = ""
         self.session.prewarm()
-        if #available(iOS 27.0, *) {
-            Task {
-                await updateInstructionTokenCount()
-            }
+        Task {
+            await updateInstructionTokenCount()
         }
     }
 
@@ -88,9 +88,7 @@ import UIKit
             presentGenerationError(error)
         }
 
-        if #available(iOS 27.0, *) {
-            updateTokenUsage(for: modelMessageIndex)
-        }
+        updateTokenUsage(for: modelMessageIndex)
     }
 
     func streamResponse() async {
@@ -114,9 +112,7 @@ import UIKit
             presentGenerationError(error)
         }
 
-        if #available(iOS 27.0, *) {
-            updateTokenUsage(for: modelMessageIndex)
-        }
+        updateTokenUsage(for: modelMessageIndex)
     }
 
     func applyInstructions() {
@@ -155,10 +151,8 @@ import UIKit
         contextTokensUsed = 0
         accumulatedInputTokens = 0
         accumulatedOutputTokens = 0
-        if #available(iOS 27.0, *) {
-            Task {
-                await updateInstructionTokenCount()
-            }
+        Task {
+            await updateInstructionTokenCount()
         }
     }
 
@@ -172,17 +166,15 @@ import UIKit
         inputText = ""
         attachedImage = nil
 
-        if #available(iOS 27.0, *) {
-            messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
-                for: prompt
-            )
-        }
+        messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
+            for: prompt
+        )
 
         return image
     }
 
     private func respond(with image: UIImage?) async throws -> LanguageModelSession.Response<String> {
-        guard #available(iOS 27.0, *), let cgImage = image?.cgImage else {
+        guard let cgImage = image?.cgImage else {
             return try await session.respond(to: prompt, options: options)
         }
 
@@ -193,7 +185,7 @@ import UIKit
     }
 
     private func responseStream(with image: UIImage?) -> LanguageModelSession.ResponseStream<String> {
-        guard #available(iOS 27.0, *), let cgImage = image?.cgImage else {
+        guard let cgImage = image?.cgImage else {
             return session.streamResponse(to: prompt, options: options)
         }
 
@@ -211,7 +203,7 @@ import UIKit
     }
 
     private func generationErrorMessage(for error: Error) -> (title: String, message: String) {
-        if #available(iOS 27.0, *), let languageModelError = error as? LanguageModelError {
+        if let languageModelError = error as? LanguageModelError {
             switch languageModelError {
             case .contextSizeExceeded(_):
                 return (
@@ -272,7 +264,6 @@ import UIKit
         )
     }
 
-    @available(iOS 27.0, *)
     private func updateInstructionTokenCount() async {
         let tokenCount = try? await SystemLanguageModel.default.tokenCount(
             for: Instructions(instructions)
@@ -282,12 +273,10 @@ import UIKit
         }
     }
 
-    @available(iOS 27.0, *)
     private func updateTokenUsage(for messageIndex: Int?) {
         updateTokenUsage(for: messageIndex, using: session.usage)
     }
 
-    @available(iOS 27.0, *)
     private func updateTokenUsage(
         for messageIndex: Int?,
         using usage: LanguageModelSession.Usage
@@ -310,3 +299,4 @@ import UIKit
         }
     }
 }
+#endif

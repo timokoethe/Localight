@@ -7,7 +7,9 @@
 
 import SwiftUI
 
+#if LOCALIGHT_IOS27_SDK
 /// The main chat interface for iOS 27.
+@available(iOS 27.0, *)
 struct ChatView_27: View {
     @State private var vm = ChatViewModel_27()
 
@@ -76,3 +78,4 @@ struct ChatView_27: View {
 #Preview {
     ChatView_27()
 }
+#endif

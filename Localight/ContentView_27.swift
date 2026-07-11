@@ -8,7 +8,9 @@
 import SwiftUI
 import FoundationModels
 
+#if LOCALIGHT_IOS27_SDK
 /// The iOS 27 app root view.
+@available(iOS 27.0, *)
 struct ContentView_27: View {
     private var model = SystemLanguageModel.default
 
@@ -31,3 +33,4 @@ struct ContentView_27: View {
 #Preview {
     ContentView_27()
 }
+#endif

@@ -8,7 +8,9 @@
 import SwiftUI
 import PhotosUI
 
+#if LOCALIGHT_IOS27_SDK
 /// Provides the iOS 27 input area for composing and sending messages.
+@available(iOS 27.0, *)
 struct TypebarView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
@@ -107,3 +109,4 @@ struct TypebarView_27: View {
 
     return TypebarView_27(vm: vm)
 }
+#endif

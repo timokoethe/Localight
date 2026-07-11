@@ -7,7 +7,9 @@
 
 import SwiftUI
 
+#if LOCALIGHT_IOS27_SDK
 /// Displays a single chat message using the iOS 27 interface.
+@available(iOS 27.0, *)
 struct MessageView_27: View {
     @State private var pop = false
 
@@ -109,3 +111,4 @@ struct MessageView_27: View {
         showsTokenUsage: true
     )
 }
+#endif
