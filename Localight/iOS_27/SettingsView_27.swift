@@ -46,6 +46,7 @@ struct SettingsView_27: View {
                         value: Double(vm.contextTokensUsed),
                         total: Double(vm.contextSize)
                     )
+                    .tint(Color("Tint"))
                     Text("\(vm.contextTokensUsed) / \(vm.contextSize) tokens")
                 } footer: {
                     Text("The context window used by the current chat.")
@@ -59,6 +60,7 @@ struct SettingsView_27: View {
                     } maximumValueLabel: {
                         Text("1")
                     }
+                    .tint(Color("Tint"))
 
                     HStack {
                         Text("Selected value")

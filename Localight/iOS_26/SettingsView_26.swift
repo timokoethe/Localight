@@ -64,6 +64,7 @@ struct SettingsView_26: View {
                     } maximumValueLabel: {
                         Text("1")
                     }
+                    .tint(Color("Tint"))
 
                     HStack {
                         Text("Selected value")
