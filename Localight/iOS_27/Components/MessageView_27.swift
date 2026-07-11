@@ -79,6 +79,7 @@ struct MessageView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     MessageView_27(
         message: Message_27(text: "Hi there!", sender: .user, tokenCount: 8),
@@ -90,6 +91,7 @@ struct MessageView_27: View {
     )
 }
 
+@available(iOS 27.0, *)
 #Preview("Messages with Images") {
     MessageView_27(
         message: Message_27(

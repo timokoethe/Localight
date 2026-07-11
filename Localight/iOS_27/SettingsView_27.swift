@@ -108,6 +108,7 @@ struct SettingsView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     SettingsView_27(vm: ChatViewModel_27())
 }

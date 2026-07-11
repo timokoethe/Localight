@@ -30,6 +30,7 @@ struct ContentView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     ContentView_27()
 }

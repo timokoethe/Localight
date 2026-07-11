@@ -98,10 +98,12 @@ struct TypebarView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     TypebarView_27(vm: ChatViewModel_27())
 }
 
+@available(iOS 27.0, *)
 #Preview("Typebar with Image") {
     let vm = ChatViewModel_27()
     vm.inputText = "What can you see?"

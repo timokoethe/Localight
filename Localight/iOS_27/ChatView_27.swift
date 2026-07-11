@@ -75,6 +75,7 @@ struct ChatView_27: View {
     }
 }
 
+@available(iOS 27.0, *)
 #Preview {
     ChatView_27()
 }
