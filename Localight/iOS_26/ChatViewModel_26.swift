@@ -67,7 +67,7 @@ import FoundationModels
 
     /// Initializes all variables with their values.
     init() {
-        let defaultInstructions = "Act as the best buddie. Keep your answer short."
+        let defaultInstructions = "Act as the best buddy. Keep your answer short."
         self.session = LanguageModelSession(instructions: defaultInstructions)
         self.options = GenerationOptions(temperature: 1.0)
         self.instructions = defaultInstructions
