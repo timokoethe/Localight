@@ -42,13 +42,17 @@ struct TypebarView_26: View {
                     .padding(.trailing, 6)
                     .padding(.vertical, 2)
             }
-            .foregroundStyle(vm.inputText.isEmpty ? .gray : Color("Tint"))
-            .disabled(vm.isResponding ? true : false)
-            .disabled(vm.inputText.isEmpty ? true : false)
+            .foregroundStyle(canSend ? Color("Tint") : .gray)
+            .disabled(vm.isResponding)
+            .disabled(!canSend)
         }
         .padding(6)
         .glassEffect()
         .padding()
+    }
+
+    private var canSend: Bool {
+        !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

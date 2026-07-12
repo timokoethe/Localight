@@ -65,9 +65,7 @@ struct ChatView_27: View {
                 }
             }
             .alert(vm.generationErrorTitle, isPresented: $vm.showsGenerationError) {
-                Button("OK", role: .cancel) {
-                    vm.resetSession()
-                }
+                Button("OK", role: .cancel) {}
             } message: {
                 Text(vm.generationErrorMessage)
             }

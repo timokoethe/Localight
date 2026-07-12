@@ -94,8 +94,9 @@ import FoundationModels
     /// - Resets the state to indicate the response cycle has finished
     func getResponse() async {
         isResponding = true
-        messages.append(Message_26(text: inputText, sender: .user))
-        prompt = inputText
+        let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        messages.append(Message_26(text: trimmedInput, sender: .user))
+        prompt = trimmedInput
         inputText = ""
         do {
             let response = try await session.respond(to: prompt, options: options)
@@ -118,8 +119,9 @@ import FoundationModels
     /// - Resets the state to indicate the response cycle has finished
     func streamResponse() async {
         isResponding = true
-        messages.append(Message_26(text: inputText, sender: .user))
-        prompt = inputText
+        let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        messages.append(Message_26(text: trimmedInput, sender: .user))
+        prompt = trimmedInput
         inputText = ""
         let stream = session.streamResponse(to: prompt, options: options)
         do {
