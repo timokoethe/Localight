@@ -16,8 +16,6 @@ import UIKit
 @Observable class ChatViewModel_27 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
-    private var accumulatedInputTokens = 0
-    private var accumulatedOutputTokens = 0
 
     var instructions: String
     var instructionsDraft: String
@@ -75,7 +73,6 @@ import UIKit
 
     func getResponse() async {
         let image = await preparePrompt()
-        var modelMessageIndex: Int?
         defer {
             isResponding = false
         }
@@ -83,18 +80,16 @@ import UIKit
         do {
             let response = try await respond(with: image)
             messages.append(Message_27(text: response.content, sender: .model))
-            modelMessageIndex = messages.index(before: messages.endIndex)
+            let modelMessageIndex = messages.index(before: messages.endIndex)
+            updateTokenUsage(for: modelMessageIndex, using: response.usage)
         } catch {
             presentGenerationError(error)
         }
-
-        updateTokenUsage(for: modelMessageIndex)
     }
 
     func streamResponse() async {
         let image = await preparePrompt()
         let stream = responseStream(with: image)
-        var modelMessageIndex: Int?
         defer {
             streamingResponse = ""
             isResponding = false
@@ -107,12 +102,11 @@ import UIKit
 
             let response = try await stream.collect()
             messages.append(Message_27(text: response.content, sender: .model))
-            modelMessageIndex = messages.index(before: messages.endIndex)
+            let modelMessageIndex = messages.index(before: messages.endIndex)
+            updateTokenUsage(for: modelMessageIndex, using: response.usage)
         } catch {
             presentGenerationError(error)
         }
-
-        updateTokenUsage(for: modelMessageIndex)
     }
 
     func applyInstructions() {
@@ -149,8 +143,6 @@ import UIKit
         messages = []
         streamingResponse = ""
         contextTokensUsed = 0
-        accumulatedInputTokens = 0
-        accumulatedOutputTokens = 0
         Task {
             await updateInstructionTokenCount()
         }
@@ -273,30 +265,12 @@ import UIKit
         }
     }
 
-    private func updateTokenUsage(for messageIndex: Int?) {
-        updateTokenUsage(for: messageIndex, using: session.usage)
-    }
-
     private func updateTokenUsage(
-        for messageIndex: Int?,
+        for messageIndex: Int,
         using usage: LanguageModelSession.Usage
     ) {
-        let inputTokens = usage.input.totalTokenCount
-        let outputTokens = usage.output.totalTokenCount
-
-        let newInputTokens = inputTokens - accumulatedInputTokens
-        let newOutputTokens = outputTokens - accumulatedOutputTokens
-        accumulatedInputTokens = inputTokens
-        accumulatedOutputTokens = outputTokens
-
-        guard newInputTokens + newOutputTokens > 0 else {
-            return
-        }
-
-        contextTokensUsed = inputTokens + outputTokens
-        if let messageIndex {
-            messages[messageIndex].tokenCount = newOutputTokens
-        }
+        contextTokensUsed = usage.totalTokenCount
+        messages[messageIndex].tokenCount = usage.output.totalTokenCount
     }
 }
 #endif
