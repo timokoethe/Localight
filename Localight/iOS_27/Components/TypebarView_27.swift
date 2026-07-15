@@ -14,6 +14,7 @@ import PhotosUI
 struct TypebarView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
+    @State private var isLoadingAttachment = false
 
     var body: some View {
             VStack(spacing: 6) {
@@ -70,31 +71,43 @@ struct TypebarView_27: View {
                             .padding(.vertical, 2)
                     }
                     .foregroundStyle(canSend ? Color("Tint") : .gray)
-                    .disabled(vm.isResponding)
-                    .disabled(!canSend)
+                    .disabled(vm.isResponding || !canSend)
                 }
             }
             .padding(8)
             .glassEffect(in: .rect(cornerRadius: 16))
             .padding()
-            .onChange(of: selectedPhotoItems) { _, items in
-                Task {
-                    guard let item = items.last,
-                          let data = try? await item.loadTransferable(type: Data.self) else {
-                        return
-                    }
-                    guard item == selectedPhotoItems.last else {
-                        return
-                    }
-                    vm.attachImageData(data)
-                }
+            .task(id: selectedPhotoItems) {
+                await loadSelectedPhoto()
             }
         }
 
+    private func loadSelectedPhoto() async {
+        guard let item = selectedPhotoItems.last else {
+            isLoadingAttachment = false
+            return
+        }
+
+        isLoadingAttachment = true
+        vm.removeAttachment()
+
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              !Task.isCancelled,
+              item == selectedPhotoItems.last else {
+            if item == selectedPhotoItems.last {
+                isLoadingAttachment = false
+            }
+            return
+        }
+
+        vm.attachImageData(data)
+        isLoadingAttachment = false
+    }
 
     private var canSend: Bool {
-        !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        || vm.attachedImage != nil
+        !isLoadingAttachment
+        && (!vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || vm.attachedImage != nil)
     }
 }
 
