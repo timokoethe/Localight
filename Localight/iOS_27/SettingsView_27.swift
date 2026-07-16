@@ -45,7 +45,7 @@ struct SettingsView_27: View {
 
                 Section {
                     ProgressView(
-                        value: Double(vm.contextTokensUsed),
+                        value: Double(min(vm.contextTokensUsed, vm.contextSize)),
                         total: Double(vm.contextSize)
                     )
                     .tint(Color("Tint"))

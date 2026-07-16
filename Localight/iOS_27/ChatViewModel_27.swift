@@ -14,6 +14,8 @@ import UIKit
 @MainActor
 @available(iOS 27.0, *)
 @Observable class ChatViewModel_27 {
+    private static let fallbackContextSize = 4_096
+
     private var session: LanguageModelSession
     private var options: GenerationOptions
 
@@ -46,13 +48,18 @@ import UIKit
 
     init() {
         let defaultInstructions = "Act as the best buddy. Keep your answer short."
+        let reportedContextSize = SystemLanguageModel.default.contextSize
         self.session = LanguageModelSession(instructions: defaultInstructions)
         self.options = GenerationOptions(temperature: 1.0)
         self.instructions = defaultInstructions
         self.instructionsDraft = defaultInstructions
         self.temperature = 1.0
         self.temperatureDraft = 1.0
-        self.contextSize = SystemLanguageModel.default.contextSize
+        // The iOS 27 beta can temporarily report zero even though the on-device
+        // model has a 4,096-token context window.
+        self.contextSize = reportedContextSize > 0
+            ? reportedContextSize
+            : Self.fallbackContextSize
         self.contextTokensUsed = 0
         self.inputText = ""
         self.attachedImage = nil
