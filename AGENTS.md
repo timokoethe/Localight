@@ -12,31 +12,44 @@ Preserve these product invariants:
 - User-facing text is currently written in English.
 - Treat model output as fallible and keep user-facing failures clear and safe.
 
-When changing behavior, keep `README.md` in sync with the implementation. Update the feature matrix in particular whenever a feature is added, removed, or behaves differently between iOS 26 and iOS 27, and keep the documented SDK strategy and limitations accurate.
+When changing behavior, keep `README.md` and the matching files in `docs/features/` in sync with the implementation. Update the feature matrix in particular whenever a feature is added, removed, or behaves differently between iOS 26 and iOS 27, and keep the documented SDK strategy and limitations accurate.
 
 ## Repository map
 
 ```text
 Localight/
-├── LocalightApp.swift          # App entry point and runtime version selection
-├── ContentView_26.swift        # iOS 26 model-availability gate
-├── ContentView_27.swift        # iOS 27 model-availability gate
-├── iOS_26/                    # Complete iOS 26 implementation
-│   ├── ChatViewModel_26.swift
-│   ├── ChatView_26.swift
-│   ├── SettingsView_26.swift
-│   ├── Components/
-│   └── Models/
-├── iOS_27/                    # Complete iOS 27 implementation
-│   ├── ChatViewModel_27.swift
-│   ├── ChatView_27.swift
-│   ├── SettingsView_27.swift
-│   ├── Components/
-│   └── Models/
-└── Assets.xcassets/
+├── Localight/                  # App source root
+│   ├── LocalightApp.swift      # App entry point and runtime version selection
+│   ├── ContentView_26.swift    # iOS 26 model-availability gate
+│   ├── ContentView_27.swift    # iOS 27 model-availability gate
+│   ├── iOS_26/                 # Complete iOS 26 implementation
+│   │   ├── ChatViewModel_26.swift
+│   │   ├── ChatView_26.swift
+│   │   ├── SettingsView_26.swift
+│   │   ├── Components/
+│   │   └── Models/
+│   ├── iOS_27/                 # Complete iOS 27 implementation
+│   │   ├── ChatViewModel_27.swift
+│   │   ├── ChatView_27.swift
+│   │   ├── SettingsView_27.swift
+│   │   ├── Components/
+│   │   └── Models/
+│   └── Assets.xcassets/
+├── docs/features/              # Individual feature specifications and template
+├── Localight.xcodeproj/
+├── README.md
+└── AGENTS.md
 ```
 
 The Xcode project uses a file-system-synchronized source group. Put new app source files in the appropriate directory; do not edit `project.pbxproj` merely to register them. Change the project file only for actual build-setting, target, capability, or resource-configuration work.
+
+## Feature documentation
+
+- Keep one Markdown specification in `docs/features/` for every row in the README feature matrix.
+- Start new specifications from `docs/features/_template.md` and preserve its frontmatter and heading structure.
+- Set `platforms` to `ios-26`, `ios-27`, or both so SDK and runtime support are explicit at the top of every specification.
+- Describe user-observable behavior, relevant privacy or platform limitations, and concise acceptance criteria that match the implementation.
+- Link each feature name in the README feature matrix to its specification, and update both documents whenever behavior changes.
 
 ## Compatibility rules
 
@@ -51,7 +64,7 @@ This is the most important constraint in the repository.
 - Do not move iOS 27 API references into unguarded shared helpers. An iOS 26 SDK does not know those symbols, even when runtime availability checks exist.
 - The SDK-filtered `SWIFT_ACTIVE_COMPILATION_CONDITIONS` entries in the target build settings currently match iOS 27.x. Update them deliberately when adding support for a later SDK generation.
 
-When changing a feature that exists in both versions, inspect and update both version trees. If behavior intentionally differs, keep the README feature matrix and relevant documentation accurate.
+When changing a feature that exists in both versions, inspect and update both version trees. If behavior intentionally differs, keep the README feature matrix and the relevant `docs/features/` specification accurate.
 
 ## Architecture and state
 
@@ -116,5 +129,5 @@ If a required SDK, runtime, or eligible device is unavailable, state that limita
 
 - Keep changes narrowly scoped and preserve unrelated work in the working tree.
 - Do not commit signing identities, provisioning profiles, derived data, generated app bundles, credentials, prompts, responses, photos, or other personal data.
-- Update `README.md` when features, platform behavior, build conditions, privacy properties, or limitations change.
+- Update `README.md` and the matching `docs/features/` specifications when features, platform behavior, build conditions, privacy properties, or limitations change.
 - Before finishing, run `git status --short`, `git diff --check`, and review `git diff`. Account for untracked files separately because they are not shown by `git diff`. Report exactly which build or manual checks were run.
