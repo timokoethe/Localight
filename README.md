@@ -34,20 +34,22 @@ See [Introducing the Third Generation of Apple’s Foundation Models](https://ma
 
 ### Feature Matrix
 
+Each feature links to its detailed specification in [`docs/features`](docs/features).
+
 | Feature | iOS 26 | iOS 27 |
 | --- | :---: | :---: |
-| On-device responses | ✅ | ✅ |
-| Response streaming | ✅ | ✅ |
-| Session prewarming | ✅ | ✅ |
-| Editable model instructions | ✅ | ✅ |
-| Adjustable model temperature | ✅ | ✅ |
-| Current context usage | ❌ | ✅ |
-| Per-message token usage | ❌ | ✅ |
-| Single-image attachments | ❌ | ✅ |
-| Typed generation error alerts | ❌ | ✅ |
-| Model availability fallback | ✅ | ✅ |
-| Clear chat session | ✅ | ✅ |
-| Local-only, non-persistent chat | ✅ | ✅ |
+| [On-device responses](docs/features/on-device-responses.md) | ✅ | ✅ |
+| [Response streaming](docs/features/response-streaming.md) | ✅ | ✅ |
+| [Session prewarming](docs/features/session-prewarming.md) | ✅ | ✅ |
+| [Editable model instructions](docs/features/editable-model-instructions.md) | ✅ | ✅ |
+| [Adjustable model temperature](docs/features/adjustable-model-temperature.md) | ✅ | ✅ |
+| [Current context usage](docs/features/current-context-usage.md) | ❌ | ✅ |
+| [Per-message token usage](docs/features/per-message-token-usage.md) | ❌ | ✅ |
+| [Single-image attachments](docs/features/single-image-attachments.md) | ❌ | ✅ |
+| [Typed generation error alerts](docs/features/typed-generation-error-alerts.md) | ❌ | ✅ |
+| [Model availability fallback](docs/features/model-availability-fallback.md) | ✅ | ✅ |
+| [Clear chat session](docs/features/clear-chat-session.md) | ✅ | ✅ |
+| [Local-only, non-persistent chat](docs/features/local-only-non-persistent-chat.md) | ✅ | ✅ |
 
 ## 📁 Project Structure
 
