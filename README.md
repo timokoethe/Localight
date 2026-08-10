@@ -7,12 +7,18 @@
 ![iOS](https://img.shields.io/badge/iOS-26+27-orange)
 ![Apple](https://img.shields.io/badge/Apple-000000?style=flat&logo=apple)
 
-**Localight** is a native SwiftUI chat app for iOS 26 and iOS 27, powered entirely by Apple’s on-device Foundation Models. Designed as a practical demonstration, Localight provides fast, private, and fully offline AI chat — no internet connection or server required.
+**Localight** is a native SwiftUI chat app for iOS 26 and iOS 27, powered entirely by Apple’s on-device Foundation Models. Designed as a practical demonstration, Localight provides fast and private AI chat without an app server. Once the operating system has downloaded and prepared the model assets, response generation works offline.
 
 Localight showcases how to integrate Apple’s on-device language model into a native iOS experience using SwiftUI and the [Foundation Models](https://developer.apple.com/documentation/foundationmodels) framework.
 
 > [!WARNING]
 > Localight is a demonstration app and is not production-ready. Model output may be inaccurate, incomplete, or misleading.
+
+## Screenshots
+
+| iOS 27: Multimodal chat with token usage | iOS 27: Session settings and context usage |
+| :---: | :---: |
+| <img src="docs/assets/chat-with-image.png" alt="Localight chat showing an image prompt, an on-device model response, and per-message token counts" width="320"> | <img src="docs/assets/session-settings.png" alt="Localight settings showing response streaming, token usage, model instructions, context usage, and temperature" width="320"> |
 
 ## Apple Foundation Models
 
@@ -20,21 +26,21 @@ Apple’s third-generation model family contains five models: two on-device mode
 The local models are **AFM 3 Core**, a dense 3-billion-parameter model, and **AFM 3 Core Advanced**, a multimodal 20-billion-parameter sparse model that activates 1–4 billion parameters depending on the request.
 The server models are **AFM 3 Cloud**, **ADM 3 Cloud (Image)**, and **AFM 3 Cloud Pro**.
 
-Localight accesses the system-provided on-device model through `SystemLanguageModel`.
-Availability depends on the device and operating system.
+Localight accesses the system-provided on-device model through `SystemLanguageModel.default`. The operating system selects and manages the concrete model; Localight does not explicitly choose AFM 3 Core, AFM 3 Core Advanced, or a Private Cloud Compute model.
+Model availability depends on the device, operating system, Apple Intelligence configuration, and whether the model assets are ready. Language and locale support are separate requirements for individual generation requests.
 See [Introducing the Third Generation of Apple’s Foundation Models](https://machinelearning.apple.com/research/introducing-third-generation-of-apple-foundation-models) for details.
 
 ## ✨ Features
 
 - 🧠 **On-device model**: Uses Apple’s local Foundation Models for text generation.
 - 🔐 **Privacy-first**: All conversations stay on your device. No data is sent to the cloud.
-- ⚡ **Fast and offline**: No internet connection is required. Responses are generated locally.
+- ⚡ **Fast and offline generation**: After the system model is ready, responses are generated locally without an internet connection.
 - 💬 **Minimalist chat UI**: Provides a clean SwiftUI interface for interacting with the model.
 - 🗑️ **No history**: Conversations are not saved after closing the app.
 
 ### Feature Matrix
 
-Each feature links to its detailed specification in [`docs/features`](docs/features).
+Each feature links to its detailed specification in [`docs/features`](docs/features). The matrix describes features implemented by Localight, not the complete API availability of the Foundation Models framework. For example, some token-counting APIs are available in later iOS 26 point releases, while Localight demonstrates per-message response usage in its iOS 27 implementation.
 
 | Feature | iOS 26 | iOS 27 |
 | --- | :---: | :---: |
@@ -51,17 +57,52 @@ Each feature links to its detailed specification in [`docs/features`](docs/featu
 | [Clear chat session](docs/features/clear-chat-session.md) | ✅ | ✅ |
 | [Local-only, non-persistent chat](docs/features/local-only-non-persistent-chat.md) | ✅ | ✅ |
 
+## Requirements
+
+- Xcode 26 to build the iOS 26 implementation, or Xcode 27 to build both implementations.
+- An iOS 26 or later deployment target; the project intentionally keeps its minimum at iOS 26.0.
+- For meaningful generation, an Apple Intelligence-eligible physical device with Apple Intelligence enabled, a supported language and region, and the system model ready.
+- No third-party packages, backend, API key, analytics service, or cloud model account.
+
+Simulator builds are useful for compilation and basic UI inspection, but the on-device model may report the simulator as ineligible. Test generation behavior on supported hardware.
+
+## Quick Start
+
+```sh
+git clone https://github.com/timokoethe/Localight.git
+cd Localight
+open Localight.xcodeproj
+```
+
+Alternatively, build the current SDK path from the command line:
+
+```sh
+xcodebuild \
+  -project Localight.xcodeproj \
+  -scheme Localight \
+  -configuration Debug \
+  -sdk iphonesimulator \
+  -destination 'generic/platform=iOS Simulator' \
+  -derivedDataPath /tmp/localight-derived-data \
+  CODE_SIGNING_ALLOWED=NO \
+  build
+```
+
 ## 📁 Project Structure
 
-Localight keeps separate implementations for each supported iOS version:
+Localight keeps separate implementations for each supported iOS version and stores showcase documentation outside the app target:
 
 ```text
-Localight/
-├── ContentView_26.swift
-├── ContentView_27.swift
-├── iOS_26/              # iOS 26 chat, model, settings, and components
-├── iOS_27/              # iOS 27 chat, model, settings, and components
-└── LocalightApp.swift   # Selects the implementation for the current iOS version
+├── Localight/
+│   ├── ContentView_26.swift
+│   ├── ContentView_27.swift
+│   ├── iOS_26/              # iOS 26 chat, model, settings, and components
+│   ├── iOS_27/              # iOS 27 chat, model, settings, and components
+│   └── LocalightApp.swift   # Selects the implementation for the current iOS version
+├── docs/
+│   ├── assets/              # README screenshots
+│   └── features/            # User-observable feature specifications
+└── Localight.xcodeproj/
 ```
 
 Version-specific files and types use the `_26` or `_27` suffix.
@@ -75,6 +116,8 @@ The deployment target remains iOS 26, so a single app built with the iOS 27 SDK 
 - At runtime, `LocalightApp` uses `#available(iOS 27.0, *)` to select the iOS 27 implementation while retaining the iOS 26 fallback.
 
 The SDK-specific compilation conditions currently match iOS 27.x. When adopting a later major SDK, update the conditional `SWIFT_ACTIVE_COMPILATION_CONDITIONS` entries in the target build settings so the iOS 27 implementation remains enabled.
+
+The repository was last build-verified on August 10, 2026, with Xcode 27.0 beta (`27A5228h`) and the iOS 27.0 Simulator SDK. An actual iOS 26 SDK build remains necessary to prove that all iOS 27 symbols are compile-time guarded.
 
 ## 🛠 How it works
 
@@ -133,6 +176,14 @@ If this limit is exceeded, the framework throws the following error: `LanguageMo
 
 For more details, see Apple’s official documentation:
 [TN3193 – Managing the on-device foundation model’s context window](https://developer.apple.com/documentation/technotes/tn3193-managing-the-on-device-foundation-model-s-context-window)
+
+## Verification and Limitations
+
+- The repository currently has one app target and no automated test target.
+- Simulator builds verify compilation, but do not prove that the system model is available or that prompts behave as expected.
+- Model behavior can change with operating system model updates. Re-test prompts, streaming, error handling, and token usage on supported hardware when adopting a new SDK or OS release.
+- Chats and attachments exist in memory only and disappear when the app is relaunched.
+- Localight does not provide production features such as persistence, account sync, moderation workflows, telemetry, or remote fallback.
 
 ## License
 
