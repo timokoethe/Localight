@@ -11,12 +11,8 @@ import SwiftUI
 /// Displays a single chat message using the iOS 27 interface.
 @available(iOS 27.0, *)
 struct MessageView_27: View {
-    @State private var pop = false
-
     let message: Message_27
     let showsTokenUsage: Bool
-    private let generator = UIImpactFeedbackGenerator(style: .medium)
-    private let uiPasteboard = UIPasteboard.general
 
     var body: some View {
         HStack {
@@ -65,17 +61,6 @@ struct MessageView_27: View {
         .padding(.horizontal)
         .contentTransition(.interpolate)
         .animation(.easeInOut(duration: 0.2), value: message.text)
-        .scaleEffect(pop ? 1.08 : 1.0)
-        .animation(.easeOut(duration: 0.20), value: pop)
-        .onLongPressGesture {
-            pop.toggle()
-            uiPasteboard.string = message.text
-            generator.prepare()
-            generator.impactOccurred()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
-                pop = false
-            }
-        }
     }
 }
 
