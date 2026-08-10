@@ -16,11 +16,7 @@ import SwiftUI
 /// Messages are presented inside a padded and rounded container for readability.
 /// This view is used as a building block within the main chat interface.
 struct MessageView_26: View {
-    @State private var pop = false
-    
     let message: Message_26
-    private let generator: UIImpactFeedbackGenerator = .init(style: .medium)
-    private let uiPasteboard: UIPasteboard = UIPasteboard.general
         
     var body: some View {
         HStack {
@@ -41,17 +37,6 @@ struct MessageView_26: View {
         .padding(.horizontal)
         .contentTransition(.interpolate)
         .animation(.easeInOut(duration: 0.2), value: message.text)
-        .scaleEffect(pop ? 1.08 : 1.0)
-        .animation(.easeOut(duration: 0.20), value: pop)
-        .onLongPressGesture {
-            pop.toggle()
-            uiPasteboard.string = message.text
-            generator.prepare()
-            generator.impactOccurred()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
-                pop = false
-            }
-        }
     }
 }
 
