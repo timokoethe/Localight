@@ -5,6 +5,7 @@
 //  Created by Timo Köthe on 10.06.26.
 //
 
+import Foundation
 import SwiftUI
 
 #if LOCALIGHT_IOS27_SDK
@@ -13,6 +14,17 @@ import SwiftUI
 struct MessageView_27: View {
     let message: Message_27
     let showsTokenUsage: Bool
+
+    private var renderedText: AttributedString {
+        guard message.sender == .model else {
+            return AttributedString(message.text)
+        }
+
+        return (try? AttributedString(
+            markdown: message.text,
+            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        )) ?? AttributedString(message.text)
+    }
 
     var body: some View {
         HStack {
@@ -32,7 +44,7 @@ struct MessageView_27: View {
                 }
                 VStack(alignment: message.sender == .model ? .leading : .trailing, spacing: 8) {
                     if !message.text.isEmpty {
-                        Text(message.text)
+                        Text(renderedText)
                             .foregroundStyle(message.sender == .user ? .white : .primary)
                     }
                 }
@@ -71,7 +83,7 @@ struct MessageView_27: View {
         showsTokenUsage: true
     )
     MessageView_27(
-        message: Message_27(text: "Hi there!", sender: .model, tokenCount: 12),
+        message: Message_27(text: "Hi **there**! Try `Markdown`.", sender: .model, tokenCount: 12),
         showsTokenUsage: true
     )
 }

@@ -5,6 +5,7 @@
 //  Created by Timo Köthe on 08.07.25.
 //
 
+import Foundation
 import SwiftUI
 
 /// The iOS 26 view for a single chat message.
@@ -17,12 +18,23 @@ import SwiftUI
 /// This view is used as a building block within the main chat interface.
 struct MessageView_26: View {
     let message: Message_26
+
+    private var renderedText: AttributedString {
+        guard message.sender == .model else {
+            return AttributedString(message.text)
+        }
+
+        return (try? AttributedString(
+            markdown: message.text,
+            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        )) ?? AttributedString(message.text)
+    }
         
     var body: some View {
         HStack {
             if message.sender == .user { Spacer() }
             
-            Text(message.text)
+            Text(renderedText)
                 .foregroundStyle(message.sender == .user ? .white : .primary)
                 .padding(12)
                 .background(message.sender == .user ? Color("Tint") : .clear)
@@ -42,7 +54,7 @@ struct MessageView_26: View {
 
 #Preview {
     MessageView_26(message: Message_26(text: "Hi there!", sender: .user))
-    MessageView_26(message: Message_26(text: "Hi there!", sender: .model))
+    MessageView_26(message: Message_26(text: "Hi **there**! Try `Markdown`.", sender: .model))
     MessageView_26(message: Message_26(text: "This is a message from the model, which is very long for demonstration purposes only.", sender: .model))
     MessageView_26(message: Message_26(text: "This is a message from the user, which is very long for demonstration purposes only.", sender: .user))
 }
