@@ -45,6 +45,7 @@ Each feature links to its detailed specification in [`docs/features`](docs/featu
 | Feature | iOS 26 | iOS 27 |
 | --- | :---: | :---: |
 | [On-device responses](docs/features/on-device-responses.md) | ✅ | ✅ |
+| [Markdown model responses](docs/features/markdown-model-responses.md) | ✅ | ✅ |
 | [Response streaming](docs/features/response-streaming.md) | ✅ | ✅ |
 | [Session prewarming](docs/features/session-prewarming.md) | ✅ | ✅ |
 | [Editable model instructions](docs/features/editable-model-instructions.md) | ✅ | ✅ |
