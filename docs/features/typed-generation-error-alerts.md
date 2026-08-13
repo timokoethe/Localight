@@ -20,3 +20,10 @@ As a user, I want understandable generation-error alerts so that I can recover w
 - Generation failures are presented in an alert and do not remain as model-authored chat messages.
 - Known language-model failures receive specific titles and guidance, including context, rate-limit, timeout, refusal, safety, language, and unsupported-content errors.
 - The active-response state is cleared after either successful generation or failure.
+
+## iOS 26 behavior
+
+Typed error alerts are an iOS 27 feature. On iOS 26 there is no typed alert mapping:
+
+- Generation failures are surfaced as a model-authored chat message containing the system-provided error description (`localizedDescription`) rather than an alert.
+- The active-response state is still cleared after either successful generation or failure.
