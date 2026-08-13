@@ -160,7 +160,7 @@ The repository was last build-verified on August 10, 2026, with Xcode 27.0 beta 
     }
     ```
 
-- **Handle generation errors**: On iOS 27, Localight maps `LanguageModelError` cases such as context-size, rate-limit, timeout, refusal, guardrail, and unsupported-content failures to user-facing alerts instead of adding raw framework errors to the chat.
+- **Handle generation errors**: On iOS 27, Localight maps `LanguageModelError` cases such as context-size, rate-limit, timeout, refusal, guardrail, and unsupported-content failures to user-facing alerts. On iOS 26, which has no typed alert mapping, a generation failure is instead shown as a model message containing the system-provided error description.
 
 ## 📏 Context Window & Token Limits
 
