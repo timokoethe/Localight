@@ -25,5 +25,5 @@ As a user, I want understandable generation-error alerts so that I can recover w
 
 Typed error alerts are an iOS 27 feature. On iOS 26 there is no typed alert mapping:
 
-- Generation failures are surfaced as a model-authored chat message containing the system-provided error description (`localizedDescription`) rather than an alert.
+- Generation failures are surfaced as a chat message using the model sender style, but its content is the system-provided error description (`localizedDescription`) rather than model-authored text.
 - The active-response state is still cleared after either successful generation or failure.
