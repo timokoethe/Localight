@@ -161,7 +161,7 @@ import UIKit
         let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         messages.append(Message_27(text: trimmedInput, sender: .user, image: image))
         let messageIndex = messages.index(before: messages.endIndex)
-        prompt = trimmedInput.isEmpty ? "Describe this image." : trimmedInput
+        prompt = trimmedInput
         inputText = ""
         attachedImage = nil
 
