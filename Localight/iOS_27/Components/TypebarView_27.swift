@@ -104,10 +104,11 @@ struct TypebarView_27: View {
         isLoadingAttachment = false
     }
 
+    /// An attachment never substitutes for a prompt: sending always requires text,
+    /// so an image can only be sent together with a question about it.
     private var canSend: Bool {
         !isLoadingAttachment
-        && (!vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            || vm.attachedImage != nil)
+        && !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

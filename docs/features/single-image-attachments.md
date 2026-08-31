@@ -18,5 +18,5 @@ As a user, I want to attach an image so that I can ask the on-device model about
 ## Acceptance Criteria
 
 - The composer accepts at most one image selected from the photo picker and shows a removable preview.
-- An image can be sent with text or by itself; an image-only prompt asks the model to describe the image.
+- An image is only sent together with a text prompt; sending stays unavailable while the text field is empty.
 - The selected attachment is released after sending, removing it, or resetting the session and is never persisted or uploaded.
