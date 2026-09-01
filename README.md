@@ -118,8 +118,6 @@ The deployment target remains iOS 26, so a single app built with the iOS 27 SDK 
 
 The SDK-specific compilation conditions currently match iOS 27.x. When adopting a later major SDK, update the conditional `SWIFT_ACTIVE_COMPILATION_CONDITIONS` entries in the target build settings so the iOS 27 implementation remains enabled.
 
-The repository was last build-verified on August 10, 2026, with Xcode 27.0 beta (`27A5228h`) and the iOS 27.0 Simulator SDK. An actual iOS 26 SDK build remains necessary to prove that all iOS 27 symbols are compile-time guarded.
-
 ## 🛠 How it works
 
 - **Import the framework**: Import `FoundationModels` in every file that uses its APIs:
