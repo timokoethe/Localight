@@ -16,9 +16,11 @@ Localight showcases how to integrate Apple’s on-device language model into a n
 
 ## Screenshots
 
-| iOS 27: Multimodal chat with token usage | iOS 27: Session settings and context usage |
+| iOS 26: Text chat | iOS 26: Session settings |
 | :---: | :---: |
-| <img src="docs/assets/chat-with-image.png" alt="Localight chat showing an image prompt, an on-device model response, and per-message token counts" width="320"> | <img src="docs/assets/session-settings.png" alt="Localight settings showing response streaming, token usage, model instructions, context usage, and temperature" width="320"> |
+| <img src="docs/assets/ios-26-text-chat.png" alt="Localight text chat on iOS 26 showing a user prompt and an on-device model response" width="240"> | <img src="docs/assets/ios-26-session-settings.png" alt="Localight session settings on iOS 26 showing response streaming, model instructions, context size, and temperature" width="240"> |
+| **iOS 27: Multimodal chat with token usage** | **iOS 27: Session settings and context usage** |
+| <img src="docs/assets/ios-27-multimodal-chat.png" alt="Localight chat on iOS 27 showing an image prompt, an on-device model response, and per-message token counts" width="240"> | <img src="docs/assets/ios-27-session-settings.png" alt="Localight session settings on iOS 27 showing response streaming, token usage, model instructions, context usage, and temperature" width="240"> |
 
 ## Apple Foundation Models
 
