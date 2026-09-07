@@ -41,7 +41,7 @@ import FoundationModels
 @Observable class ChatViewModel_26 {
     private var session: LanguageModelSession
     private var options: GenerationOptions
-
+    
     var instructions: String        // The instructions to the model of how it should respond and behave.
     var instructionsDraft: String   // The in-progress edit of the system prompt, applied on confirmation.
     var temperature: Double         // The temperature to increase creativity.
@@ -53,18 +53,18 @@ import FoundationModels
     var isStreaming: Bool           // Indicates whether a response should be streamed to the UI or not.
     var messages: [Message_26]      // A collection of all messages displayed in the iOS 26 chat view.
     var streamingResponse: String
-
+    
     /// Whether the draft differs from the active instructions and is non-empty,
     /// i.e. whether there is a meaningful system prompt change to apply.
     var hasInstructionChanges: Bool {
         let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         return !trimmed.isEmpty && trimmed != instructions
     }
-
+    
     var hasTemperatureChanges: Bool {
         temperatureDraft != temperature
     }
-
+    
     /// Initializes all variables with their values.
     init() {
         let defaultInstructions = "Act as the best buddy. Keep your answer short."
@@ -152,12 +152,12 @@ import FoundationModels
         instructionsDraft = trimmed
         resetSession()
     }
-
+    
     func applyTemperature() {
         temperature = temperatureDraft
         resetSession()
     }
-
+    
     /// Rebuilds the session and clears the current chat state.
     func resetSession() {
         self.session = LanguageModelSession(instructions: self.instructions)

@@ -17,11 +17,11 @@ import SwiftUI
 /// Data is bound to the provided `ChatViewModel_26`.
 struct SettingsView_26: View {
     @Bindable var vm: ChatViewModel_26
-
+    
     /// Controls the presentation of the save confirmation dialog.
     @State private var showsSaveConfirmation: Bool = false
     @State private var showsTemperatureConfirmation: Bool = false
-
+    
     var body: some View {
         NavigationStack {
             List {
@@ -31,11 +31,11 @@ struct SettingsView_26: View {
                 } footer: {
                     Text("Streams output as it’s generated. Turn off to show the full response at once.")
                 }
-
+                
                 Section {
                     TextField("Instructions...", text: $vm.instructionsDraft, axis: .vertical)
                         .lineLimit(2...)
-
+                    
                     Button("Save") {
                         showsSaveConfirmation = true
                     }
@@ -55,7 +55,7 @@ struct SettingsView_26: View {
                 } footer: {
                     Text("The maximum context size in tokens supported by the model.")
                 }
-
+                
                 Section {
                     Slider(value: $vm.temperatureDraft, in: 0...1, step: 0.1) {
                         Text("Temperature")
@@ -65,13 +65,13 @@ struct SettingsView_26: View {
                         Text("1")
                     }
                     .tint(Color("Tint"))
-
+                    
                     HStack {
                         Text("Selected value")
                         Spacer()
                         Text(vm.temperatureDraft, format: .number.precision(.fractionLength(1)))
                     }
-
+                    
                     Button("Save") {
                         showsTemperatureConfirmation = true
                     }

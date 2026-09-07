@@ -13,7 +13,7 @@ import FoundationModels
 @available(iOS 27.0, *)
 struct ContentView_27: View {
     private var model = SystemLanguageModel.default
-
+    
     var body: some View {
         switch model.availability {
         case .available:

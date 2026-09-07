@@ -15,82 +15,82 @@ struct TypebarView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
     @State private var isLoadingAttachment = false
-
+    
     var body: some View {
-            VStack(spacing: 6) {
-                
-                if let image = vm.attachedImage {
-                    HStack {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 44, height: 44)
-                            .clipShape(.rect(cornerRadius: 8))
-
-                        Button("Remove", systemImage: "xmark.circle.fill") {
-                            selectedPhotoItems = []
-                            vm.removeAttachment()
-                        }
-                        .labelStyle(.iconOnly)
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 6)
-                }
-
+        VStack(spacing: 6) {
+            
+            if let image = vm.attachedImage {
                 HStack {
-                    PhotosPicker(selection: $selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 24)
-                            .padding(.vertical, 6)
-                            .padding(.leading, 6)
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 44, height: 44)
+                        .clipShape(.rect(cornerRadius: 8))
+                    
+                    Button("Remove", systemImage: "xmark.circle.fill") {
+                        selectedPhotoItems = []
+                        vm.removeAttachment()
                     }
-                    .foregroundStyle(Color("Tint"))
-                    .disabled(vm.isResponding)
-
-                    TextField("Type here ...", text: $vm.inputText)
-                        .padding(.horizontal, 6)
-
-                    Button(role: .confirm) {
-                        Task {
-                            if vm.isStreaming {
-                                await vm.streamResponse()
-                            } else {
-                                await vm.getResponse()
-                            }
-                            selectedPhotoItems = []
-                        }
-                    } label: {
-                        Image(systemName: "paperplane.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 30)
-                            .padding(.trailing, 6)
-                            .padding(.vertical, 2)
-                    }
-                    .foregroundStyle(canSend ? Color("Tint") : .gray)
-                    .disabled(vm.isResponding || !canSend)
+                    .labelStyle(.iconOnly)
+                    
+                    Spacer()
                 }
+                .padding(.horizontal, 6)
             }
-            .padding(8)
-            .glassEffect(in: .rect(cornerRadius: 16))
-            .padding()
-            .task(id: selectedPhotoItems) {
-                await loadSelectedPhoto()
+            
+            HStack {
+                PhotosPicker(selection: $selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 24)
+                        .padding(.vertical, 6)
+                        .padding(.leading, 6)
+                }
+                .foregroundStyle(Color("Tint"))
+                .disabled(vm.isResponding)
+                
+                TextField("Type here ...", text: $vm.inputText)
+                    .padding(.horizontal, 6)
+                
+                Button(role: .confirm) {
+                    Task {
+                        if vm.isStreaming {
+                            await vm.streamResponse()
+                        } else {
+                            await vm.getResponse()
+                        }
+                        selectedPhotoItems = []
+                    }
+                } label: {
+                    Image(systemName: "paperplane.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 30)
+                        .padding(.trailing, 6)
+                        .padding(.vertical, 2)
+                }
+                .foregroundStyle(canSend ? Color("Tint") : .gray)
+                .disabled(vm.isResponding || !canSend)
             }
         }
-
+        .padding(8)
+        .glassEffect(in: .rect(cornerRadius: 16))
+        .padding()
+        .task(id: selectedPhotoItems) {
+            await loadSelectedPhoto()
+        }
+    }
+    
     private func loadSelectedPhoto() async {
         guard let item = selectedPhotoItems.last else {
             isLoadingAttachment = false
             return
         }
-
+        
         isLoadingAttachment = true
         vm.removeAttachment()
-
+        
         guard let data = try? await item.loadTransferable(type: Data.self),
               !Task.isCancelled,
               item == selectedPhotoItems.last else {
@@ -99,11 +99,11 @@ struct TypebarView_27: View {
             }
             return
         }
-
+        
         vm.attachImageData(data)
         isLoadingAttachment = false
     }
-
+    
     /// An attachment never substitutes for a prompt: sending always requires text,
     /// so an image can only be sent together with a question about it.
     private var canSend: Bool {
@@ -122,7 +122,7 @@ struct TypebarView_27: View {
     let vm = ChatViewModel_27()
     vm.inputText = "What can you see?"
     vm.attachedImage = UIImage(named: "Portrait")
-
+    
     return TypebarView_27(vm: vm)
 }
 #endif

@@ -12,7 +12,7 @@ import SwiftUI
 @available(iOS 27.0, *)
 struct ChatView_27: View {
     @State private var vm = ChatViewModel_27()
-
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -23,7 +23,7 @@ struct ChatView_27: View {
                             showsTokenUsage: vm.showsMessageTokenUsage
                         )
                     }
-
+                    
                     if vm.isResponding && !vm.isStreaming {
                         HStack {
                             ProgressView()
@@ -31,7 +31,7 @@ struct ChatView_27: View {
                         }
                         .padding(.horizontal)
                     }
-
+                    
                     if vm.isResponding && vm.isStreaming {
                         HStack {
                             MessageView_27(
@@ -56,7 +56,7 @@ struct ChatView_27: View {
                     Button("Clear", systemImage: "trash", action: vm.resetSession)
                         .disabled(vm.isResponding || vm.messages.isEmpty)
                 }
-
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView_27(vm: vm)) {
                         Image(systemName: "gear")

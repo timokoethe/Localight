@@ -25,7 +25,7 @@ struct TypebarView_26: View {
         HStack {
             TextField("Type here ...", text: $vm.inputText)
                 .padding(.horizontal, 6)
-
+            
             Button(role: .confirm) {
                 Task {
                     if vm.isStreaming {
@@ -50,7 +50,7 @@ struct TypebarView_26: View {
         .glassEffect()
         .padding()
     }
-
+    
     private var canSend: Bool {
         !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
