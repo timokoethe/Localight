@@ -15,10 +15,10 @@ import UIKit
 @available(iOS 27.0, *)
 @Observable class ChatViewModel_27 {
     private static let fallbackContextSize = 4_096
-
+    
     private var session: LanguageModelSession
     private var options: GenerationOptions
-
+    
     var instructions: String
     var instructionsDraft: String
     var temperature: Double
@@ -36,16 +36,16 @@ import UIKit
     var generationErrorMessage: String
     var messages: [Message_27]
     var streamingResponse: String
-
+    
     var hasInstructionChanges: Bool {
         let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         return !trimmed.isEmpty && trimmed != instructions
     }
-
+    
     var hasTemperatureChanges: Bool {
         temperatureDraft != temperature
     }
-
+    
     init() {
         let defaultInstructions = "Act as the best buddy. Keep your answer short."
         let reportedContextSize = SystemLanguageModel.default.contextSize
@@ -58,8 +58,8 @@ import UIKit
         // The iOS 27 beta can temporarily report zero even though the on-device
         // model has a 4,096-token context window.
         self.contextSize = reportedContextSize > 0
-            ? reportedContextSize
-            : Self.fallbackContextSize
+        ? reportedContextSize
+        : Self.fallbackContextSize
         self.contextTokensUsed = 0
         self.inputText = ""
         self.attachedImage = nil
@@ -77,13 +77,13 @@ import UIKit
             await updateInstructionTokenCount()
         }
     }
-
+    
     func getResponse() async {
         let image = await preparePrompt()
         defer {
             isResponding = false
         }
-
+        
         do {
             let response = try await respond(with: image)
             messages.append(Message_27(text: response.content, sender: .model))
@@ -93,7 +93,7 @@ import UIKit
             presentGenerationError(error)
         }
     }
-
+    
     func streamResponse() async {
         let image = await preparePrompt()
         let stream = responseStream(with: image)
@@ -101,12 +101,12 @@ import UIKit
             streamingResponse = ""
             isResponding = false
         }
-
+        
         do {
             for try await chunk in stream {
                 streamingResponse = chunk.content
             }
-
+            
             let response = try await stream.collect()
             messages.append(Message_27(text: response.content, sender: .model))
             let modelMessageIndex = messages.index(before: messages.endIndex)
@@ -115,27 +115,27 @@ import UIKit
             presentGenerationError(error)
         }
     }
-
+    
     func applyInstructions() {
         let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         instructions = trimmed
         instructionsDraft = trimmed
         resetSession()
     }
-
+    
     func applyTemperature() {
         temperature = temperatureDraft
         resetSession()
     }
-
+    
     func attachImageData(_ data: Data) {
         attachedImage = UIImage(data: data)
     }
-
+    
     func removeAttachment() {
         attachedImage = nil
     }
-
+    
     func resetSession() {
         session = LanguageModelSession(instructions: instructions)
         options = GenerationOptions(temperature: temperature)
@@ -154,7 +154,7 @@ import UIKit
             await updateInstructionTokenCount()
         }
     }
-
+    
     private func preparePrompt() async -> UIImage? {
         isResponding = true
         let image = attachedImage
@@ -164,43 +164,43 @@ import UIKit
         prompt = trimmedInput
         inputText = ""
         attachedImage = nil
-
+        
         messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
             for: prompt
         )
-
+        
         return image
     }
-
+    
     private func respond(with image: UIImage?) async throws -> LanguageModelSession.Response<String> {
         guard let cgImage = image?.cgImage else {
             return try await session.respond(to: prompt, options: options)
         }
-
+        
         return try await session.respond(options: options) {
             prompt
             Attachment<ImageAttachmentContent>(cgImage)
         }
     }
-
+    
     private func responseStream(with image: UIImage?) -> LanguageModelSession.ResponseStream<String> {
         guard let cgImage = image?.cgImage else {
             return session.streamResponse(to: prompt, options: options)
         }
-
+        
         return session.streamResponse(options: options) {
             prompt
             Attachment<ImageAttachmentContent>(cgImage)
         }
     }
-
+    
     private func presentGenerationError(_ error: Error) {
         let errorMessage = generationErrorMessage(for: error)
         generationErrorTitle = errorMessage.title
         generationErrorMessage = errorMessage.message
         showsGenerationError = true
     }
-
+    
     private func generationErrorMessage(for error: Error) -> (title: String, message: String) {
         if let languageModelError = error as? LanguageModelError {
             switch languageModelError {
@@ -256,13 +256,13 @@ import UIKit
                 )
             }
         }
-
+        
         return (
             "Response failed",
             error.localizedDescription
         )
     }
-
+    
     private func updateInstructionTokenCount() async {
         let tokenCount = try? await SystemLanguageModel.default.tokenCount(
             for: Instructions(instructions)
@@ -271,7 +271,7 @@ import UIKit
             contextTokensUsed = tokenCount ?? 0
         }
     }
-
+    
     private func updateTokenUsage(
         for messageIndex: Int,
         using usage: LanguageModelSession.Usage

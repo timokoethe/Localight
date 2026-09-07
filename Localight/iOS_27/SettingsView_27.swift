@@ -14,7 +14,7 @@ struct SettingsView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var showsSaveConfirmation = false
     @State private var showsTemperatureConfirmation = false
-
+    
     var body: some View {
         NavigationStack {
             List {
@@ -28,11 +28,11 @@ struct SettingsView_27: View {
                 } footer: {
                     Text("Controls response streaming and per-message token usage.")
                 }
-
+                
                 Section {
                     TextField("Instructions...", text: $vm.instructionsDraft, axis: .vertical)
                         .lineLimit(2...)
-
+                    
                     Button("Save") {
                         showsSaveConfirmation = true
                     }
@@ -42,7 +42,7 @@ struct SettingsView_27: View {
                 } footer: {
                     Text("Instructions guide the model’s behavior and tone for all responses. Saving applies a new system prompt and clears the current chat.")
                 }
-
+                
                 Section {
                     ProgressView(
                         value: Double(min(vm.contextTokensUsed, vm.contextSize)),
@@ -53,7 +53,7 @@ struct SettingsView_27: View {
                 } footer: {
                     Text("The context window used by the current chat.")
                 }
-
+                
                 Section {
                     Slider(value: $vm.temperatureDraft, in: 0...1, step: 0.1) {
                         Text("Temperature")
@@ -63,13 +63,13 @@ struct SettingsView_27: View {
                         Text("1")
                     }
                     .tint(Color("Tint"))
-
+                    
                     HStack {
                         Text("Selected value")
                         Spacer()
                         Text(vm.temperatureDraft, format: .number.precision(.fractionLength(1)))
                     }
-
+                    
                     Button("Save") {
                         showsTemperatureConfirmation = true
                     }

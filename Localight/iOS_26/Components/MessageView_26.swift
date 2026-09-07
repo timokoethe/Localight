@@ -18,18 +18,18 @@ import SwiftUI
 /// This view is used as a building block within the main chat interface.
 struct MessageView_26: View {
     let message: Message_26
-
+    
     private var renderedText: AttributedString {
         guard message.sender == .model else {
             return AttributedString(message.text)
         }
-
+        
         return (try? AttributedString(
             markdown: message.text,
             options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
         )) ?? AttributedString(message.text)
     }
-        
+    
     var body: some View {
         HStack {
             if message.sender == .user { Spacer() }
@@ -41,7 +41,7 @@ struct MessageView_26: View {
                 .background(.thinMaterial)
                 .clipShape(.rect(cornerRadius: 15))
                 .containerRelativeFrame(.horizontal, alignment: message.sender == .model ? .leading : .trailing) { len, _  in
-                        return len / 1.2
+                    return len / 1.2
                 }
             
             if message.sender == .model { Spacer() }

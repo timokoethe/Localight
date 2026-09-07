@@ -48,7 +48,7 @@ struct ChatView_26: View {
                 .safeAreaInset(edge: .bottom, spacing: 0) {
                     TypebarView_26(vm: vm)
                 }
-
+                
             }
             .toolbar {
                 // Shows a button for deleting the current chat session

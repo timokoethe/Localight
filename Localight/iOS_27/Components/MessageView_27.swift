@@ -14,28 +14,28 @@ import SwiftUI
 struct MessageView_27: View {
     let message: Message_27
     let showsTokenUsage: Bool
-
+    
     private var renderedText: AttributedString {
         guard message.sender == .model else {
             return AttributedString(message.text)
         }
-
+        
         return (try? AttributedString(
             markdown: message.text,
             options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
         )) ?? AttributedString(message.text)
     }
-
+    
     var body: some View {
         HStack {
             if message.sender == .user {
                 Spacer()
             }
-
+            
             VStack(alignment: message.sender == .model ? .leading : .trailing) {
                 if let image = message.image {
                     Image(uiImage: image)
-    
+                    
                         .resizable()
                         .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
                         .scaledToFit()
@@ -52,7 +52,7 @@ struct MessageView_27: View {
                 .background(message.sender == .user ? Color("Tint") : .clear)
                 .background(.thinMaterial)
                 .clipShape(.rect(cornerRadius: 15))
-
+                
                 if showsTokenUsage, let tokenCount = message.tokenCount {
                     Text("\(tokenCount) \(message.sender == .user ? "input" : "output") tokens")
                         .font(.caption2)
@@ -65,7 +65,7 @@ struct MessageView_27: View {
             ) { length, _ in
                 length / 1.2
             }
-
+            
             if message.sender == .model {
                 Spacer()
             }
@@ -99,7 +99,7 @@ struct MessageView_27: View {
         ),
         showsTokenUsage: true
     )
-
+    
     MessageView_27(
         message: Message_27(
             text: "Portrait attachment",
