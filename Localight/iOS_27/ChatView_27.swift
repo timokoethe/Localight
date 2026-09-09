@@ -33,16 +33,13 @@ struct ChatView_27: View {
                     }
                     
                     if vm.isResponding && vm.isStreaming {
-                        HStack {
-                            MessageView_27(
-                                message: Message_27(
-                                    text: vm.streamingResponse,
-                                    sender: .model
-                                ),
-                                showsTokenUsage: vm.showsMessageTokenUsage
-                            )
-                            Spacer()
-                        }
+                        MessageView_27(
+                            message: Message_27(
+                                text: vm.streamingResponse,
+                                sender: .model
+                            ),
+                            showsTokenUsage: vm.showsMessageTokenUsage
+                        )
                     }
                 }
                 .scrollBounceBehavior(.basedOnSize)
