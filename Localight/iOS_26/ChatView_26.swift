@@ -37,10 +37,7 @@ struct ChatView_26: View {
                     
                     // Shows a response stream as long as the model streams a response
                     if vm.isResponding && vm.isStreaming {
-                        HStack {
-                            MessageView_26(message: Message_26(text: vm.streamingResponse, sender: .model))
-                            Spacer()
-                        }
+                        MessageView_26(message: Message_26(text: vm.streamingResponse, sender: .model))
                     }
                 }
                 .scrollBounceBehavior(.basedOnSize)
