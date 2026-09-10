@@ -94,6 +94,10 @@ import FoundationModels
     /// - Resets the state to indicate the response cycle has finished
     func getResponse() async {
         isResponding = true
+        defer {
+            isResponding = false
+        }
+
         let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         messages.append(Message_26(text: trimmedInput, sender: .user))
         prompt = trimmedInput
@@ -106,7 +110,6 @@ import FoundationModels
             let message = Message_26(text: error.localizedDescription, sender: .model)
             messages.append(message)
         }
-        isResponding = false
     }
     
     /// Streams a response from the model based on the user’s current input.
@@ -119,6 +122,11 @@ import FoundationModels
     /// - Resets the state to indicate the response cycle has finished
     func streamResponse() async {
         isResponding = true
+        defer {
+            streamingResponse = ""
+            isResponding = false
+        }
+
         let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         messages.append(Message_26(text: trimmedInput, sender: .user))
         prompt = trimmedInput
@@ -136,8 +144,6 @@ import FoundationModels
             let message = Message_26(text: error.localizedDescription, sender: .model)
             messages.append(message)
         }
-        streamingResponse = ""
-        isResponding = false
     }
     
     /// Applies the edited draft as the new system prompt.
