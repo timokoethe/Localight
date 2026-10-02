@@ -167,6 +167,7 @@ The SDK-specific compilation conditions currently match iOS 27.x. When adopting 
 Apple’s on-device Foundation Models operate with a limited context window per session.
 The context window defines how many tokens the model can process within a single `LanguageModelSession`.
 On iOS 27, the displayed usage includes the system instructions.
+After a session reset, the instruction-token count is recalculated for the new session; an unfinished count from the previous session is discarded.
 
 - A token is a unit of text processed by the model.
 - In Western languages (e.g. English or German), 1 token ≈ 3–4 characters.
