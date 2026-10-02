@@ -20,6 +20,7 @@ As a user, I want to see current context usage so that I can understand how clos
 - Settings show used tokens relative to the model’s context-window size.
 - Usage includes the active system instructions and updates from framework-reported session usage after responses.
 - Starting a fresh session resets displayed usage to the token count of the active instructions.
+- After consecutive session resets, an older instruction-token count cannot replace the current session’s usage.
 
 ## iOS 26 behavior
 

@@ -18,6 +18,7 @@ import UIKit
     
     private var session: LanguageModelSession
     private var options: GenerationOptions
+    private var instructionTokenCountTask: Task<Void, Never>?
     
     var instructions: String
     var instructionsDraft: String
@@ -73,9 +74,7 @@ import UIKit
         self.messages = []
         self.streamingResponse = ""
         self.session.prewarm()
-        Task {
-            await updateInstructionTokenCount()
-        }
+        scheduleInstructionTokenCount()
     }
     
     func getResponse() async {
@@ -150,9 +149,7 @@ import UIKit
         messages = []
         streamingResponse = ""
         contextTokensUsed = 0
-        Task {
-            await updateInstructionTokenCount()
-        }
+        scheduleInstructionTokenCount()
     }
     
     private func preparePrompt() async -> UIImage? {
@@ -263,11 +260,19 @@ import UIKit
         )
     }
     
+    private func scheduleInstructionTokenCount() {
+        instructionTokenCountTask?.cancel()
+        instructionTokenCountTask = Task {
+            await updateInstructionTokenCount()
+        }
+    }
+
     private func updateInstructionTokenCount() async {
         let tokenCount = try? await SystemLanguageModel.default.tokenCount(
             for: Instructions(instructions)
         )
-        if messages.isEmpty {
+        // Cancellation may not stop the framework call, so reject its late result too.
+        if !Task.isCancelled && messages.isEmpty {
             contextTokensUsed = tokenCount ?? 0
         }
     }
