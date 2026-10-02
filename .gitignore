@@ -4,6 +4,9 @@
 ## Xcode workspace
 *.xcworkspace
 
+## Per-developer Xcode configuration
+/Config/Local.xcconfig
+
 ## Build generated
 build/
 DerivedData/

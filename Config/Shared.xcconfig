@@ -1,0 +1,9 @@
+// Defaults that keep unsigned builds portable across machines.
+LOCALIGHT_DEVELOPMENT_TEAM =
+LOCALIGHT_BUNDLE_IDENTIFIER = com.example.Localight
+
+// Optional per-developer overrides. This file is intentionally not committed.
+#include? "Local.xcconfig"
+
+DEVELOPMENT_TEAM = $(LOCALIGHT_DEVELOPMENT_TEAM)
+PRODUCT_BUNDLE_IDENTIFIER = $(LOCALIGHT_BUNDLE_IDENTIFIER)
