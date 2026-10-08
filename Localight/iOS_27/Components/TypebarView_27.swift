@@ -14,7 +14,7 @@ import PhotosUI
 struct TypebarView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
-    @State private var isLoadingAttachment = false
+    @State private var attachmentImportID = UUID()
     
     var body: some View {
         VStack(spacing: 6) {
@@ -83,31 +83,36 @@ struct TypebarView_27: View {
     }
     
     private func loadSelectedPhoto() async {
+        let importID = UUID()
+        attachmentImportID = importID
         guard let item = selectedPhotoItems.last else {
-            isLoadingAttachment = false
+            vm.isLoadingAttachment = false
             return
         }
         
-        isLoadingAttachment = true
+        vm.isLoadingAttachment = true
         vm.removeAttachment()
         
-        guard let data = try? await item.loadTransferable(type: Data.self),
+        let data = try? await item.loadTransferable(type: Data.self)
+        // A cancelled import may finish after a newer import of the same photo.
+        guard attachmentImportID == importID else { return }
+        guard let data,
               !Task.isCancelled,
               item == selectedPhotoItems.last else {
             if item == selectedPhotoItems.last {
-                isLoadingAttachment = false
+                vm.isLoadingAttachment = false
             }
             return
         }
         
         vm.attachImageData(data)
-        isLoadingAttachment = false
+        vm.isLoadingAttachment = false
     }
     
     /// An attachment never substitutes for a prompt: sending always requires text,
     /// so an image can only be sent together with a question about it.
     private var canSend: Bool {
-        !isLoadingAttachment
+        !vm.isLoadingAttachment
         && !vm.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

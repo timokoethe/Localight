@@ -28,6 +28,7 @@ import UIKit
     var contextTokensUsed: Int
     var inputText: String
     var attachedImage: UIImage?
+    var isLoadingAttachment: Bool
     var prompt: String
     var isResponding: Bool
     var isStreaming: Bool
@@ -64,6 +65,7 @@ import UIKit
         self.contextTokensUsed = 0
         self.inputText = ""
         self.attachedImage = nil
+        self.isLoadingAttachment = false
         self.prompt = ""
         self.isResponding = false
         self.isStreaming = false

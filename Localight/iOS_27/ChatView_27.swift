@@ -51,14 +51,14 @@ struct ChatView_27: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Clear", systemImage: "trash", action: vm.resetSession)
-                        .disabled(vm.isResponding || vm.messages.isEmpty)
+                        .disabled(vm.isResponding || vm.isLoadingAttachment || vm.messages.isEmpty)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView_27(vm: vm)) {
                         Image(systemName: "gear")
                     }
-                    .disabled(vm.isResponding)
+                    .disabled(vm.isResponding || vm.isLoadingAttachment)
                 }
             }
             .alert(vm.generationErrorTitle, isPresented: $vm.showsGenerationError) {

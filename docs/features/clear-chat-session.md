@@ -21,3 +21,4 @@ As a user, I want to clear the current chat so that I can begin a new conversati
 - A Clear control is available when the chat contains messages and no response is active.
 - Clearing creates a fresh session with the active instructions and temperature and removes all visible messages and draft input.
 - On iOS 27, clearing also releases any selected image, resets context usage, and dismisses generation-error state.
+- On iOS 27, Clear and navigation to settings remain unavailable while an image attachment is loading, preventing a session reset during import.
