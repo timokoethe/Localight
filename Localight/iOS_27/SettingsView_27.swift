@@ -14,102 +14,102 @@ struct SettingsView_27: View {
     @Bindable var vm: ChatViewModel_27
     @State private var showsSaveConfirmation = false
     @State private var showsTemperatureConfirmation = false
-    
+
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    Toggle("Stream responses", isOn: $vm.isStreaming)
-                        .tint(Color("Tint"))
-                    Toggle("Show token usage", isOn: $vm.showsMessageTokenUsage)
-                        .tint(Color("Tint"))
-                } header: {
-                    Text("Chat")
-                } footer: {
-                    Text("Controls response streaming and per-message token usage.")
-                }
-                
-                Section {
-                    TextField("Instructions...", text: $vm.instructionsDraft, axis: .vertical)
-                        .lineLimit(2...)
-                    
-                    Button("Save") {
-                        showsSaveConfirmation = true
-                    }
-                    .disabled(!vm.hasInstructionChanges)
-                } header: {
-                    Text("Instructions")
-                } footer: {
-                    Text("Instructions guide the model’s behavior and tone for all responses. Saving applies a new system prompt and clears the current chat.")
-                }
-                
-                Section {
-                    ProgressView(
-                        value: Double(min(vm.contextTokensUsed, vm.contextSize)),
-                        total: Double(vm.contextSize)
-                    )
+        List {
+            Section {
+                Toggle("Stream responses", isOn: $vm.isStreaming)
                     .tint(Color("Tint"))
-                    Text("\(vm.contextTokensUsed) / \(vm.contextSize) tokens")
-                } footer: {
-                    Text("The context window used by the current chat.")
-                }
-                
-                Section {
-                    Slider(value: $vm.temperatureDraft, in: 0...1, step: 0.1) {
-                        Text("Temperature")
-                    } minimumValueLabel: {
-                        Text("0")
-                    } maximumValueLabel: {
-                        Text("1")
-                    }
+                Toggle("Show token usage", isOn: $vm.showsMessageTokenUsage)
                     .tint(Color("Tint"))
-                    
-                    HStack {
-                        Text("Selected value")
-                        Spacer()
-                        Text(vm.temperatureDraft, format: .number.precision(.fractionLength(1)))
-                    }
-                    
-                    Button("Save") {
-                        showsTemperatureConfirmation = true
-                    }
-                    .disabled(!vm.hasTemperatureChanges)
-                } header: {
+            } header: {
+                Text("Chat")
+            } footer: {
+                Text("Controls response streaming and per-message token usage.")
+            }
+
+            Section {
+                TextField("Instructions...", text: $vm.instructionsDraft, axis: .vertical)
+                    .lineLimit(2...)
+
+                Button("Save") {
+                    showsSaveConfirmation = true
+                }
+                .disabled(!vm.hasInstructionChanges)
+            } header: {
+                Text("Instructions")
+            } footer: {
+                Text("Instructions guide the model’s behavior and tone for all responses. Saving applies a new system prompt and clears the current chat.")
+            }
+
+            Section {
+                ProgressView(
+                    value: Double(min(vm.contextTokensUsed, vm.contextSize)),
+                    total: Double(vm.contextSize)
+                )
+                .tint(Color("Tint"))
+                Text("\(vm.contextTokensUsed) / \(vm.contextSize) tokens")
+            } footer: {
+                Text("The context window used by the current chat.")
+            }
+
+            Section {
+                Slider(value: $vm.temperatureDraft, in: 0...1, step: 0.1) {
                     Text("Temperature")
-                } footer: {
-                    Text("Controls how creative the model is. Saving starts a fresh session and clears the current chat.")
+                } minimumValueLabel: {
+                    Text("0")
+                } maximumValueLabel: {
+                    Text("1")
                 }
-            }
-            .navigationTitle("Information")
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(
-                "Save new instructions?",
-                isPresented: $showsSaveConfirmation
-            ) {
-                Button("Save", role: .destructive) {
-                    vm.applyInstructions()
+                .tint(Color("Tint"))
+
+                HStack {
+                    Text("Selected value")
+                    Spacer()
+                    Text(vm.temperatureDraft, format: .number.precision(.fractionLength(1)))
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Applying a new system prompt starts a fresh session and clears the current chat.")
-            }
-            .alert(
-                "Save new temperature?",
-                isPresented: $showsTemperatureConfirmation
-            ) {
-                Button("Save", role: .destructive) {
-                    vm.applyTemperature()
+
+                Button("Save") {
+                    showsTemperatureConfirmation = true
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Applying a new temperature starts a fresh session and clears the current chat.")
+                .disabled(!vm.hasTemperatureChanges)
+            } header: {
+                Text("Temperature")
+            } footer: {
+                Text("Controls how creative the model is. Saving starts a fresh session and clears the current chat.")
             }
+        }
+        .navigationTitle("Information")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            "Save new instructions?",
+            isPresented: $showsSaveConfirmation
+        ) {
+            Button("Save", role: .destructive) {
+                vm.applyInstructions()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Applying a new system prompt starts a fresh session and clears the current chat.")
+        }
+        .alert(
+            "Save new temperature?",
+            isPresented: $showsTemperatureConfirmation
+        ) {
+            Button("Save", role: .destructive) {
+                vm.applyTemperature()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Applying a new temperature starts a fresh session and clears the current chat.")
         }
     }
 }
 
 @available(iOS 27.0, *)
 #Preview {
-    SettingsView_27(vm: ChatViewModel_27())
+    NavigationStack {
+        SettingsView_27(vm: ChatViewModel_27())
+    }
 }
 #endif
