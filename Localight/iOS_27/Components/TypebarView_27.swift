@@ -126,7 +126,9 @@ struct TypebarView_27: View {
 #Preview("Typebar with Image") {
     let vm = ChatViewModel_27()
     vm.inputText = "What can you see?"
-    vm.attachedImage = UIImage(named: "Portrait")
+    if let data = UIImage(named: "Portrait")?.pngData() {
+        vm.attachImageData(data)
+    }
     
     return TypebarView_27(vm: vm)
 }
