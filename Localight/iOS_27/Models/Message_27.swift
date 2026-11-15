@@ -13,7 +13,6 @@ import UIKit
 @available(iOS 27.0, *)
 struct Message_27: Identifiable {
     let id = UUID()
-    var date = Date()
     var text: String
     var sender: Sender_27
     var image: UIImage? = nil

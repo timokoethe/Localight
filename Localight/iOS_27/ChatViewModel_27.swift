@@ -17,7 +17,9 @@ import UIKit
     private static let fallbackContextSize = 4_096
     
     private var session: LanguageModelSession
-    private var options: GenerationOptions
+    private var options: GenerationOptions {
+        GenerationOptions(temperature: temperature)
+    }
     private var instructionTokenCountTask: Task<Void, Never>?
     
     private(set) var instructions: String
@@ -29,7 +31,6 @@ import UIKit
     var inputText: String
     private(set) var attachedImage: UIImage?
     var isLoadingAttachment: Bool
-    private var prompt: String
     private(set) var isResponding: Bool
     var isStreaming: Bool
     var showsMessageTokenUsage: Bool
@@ -52,7 +53,6 @@ import UIKit
         let defaultInstructions = "Act as the best buddy. Keep your answer short."
         let reportedContextSize = SystemLanguageModel.default.contextSize
         self.session = LanguageModelSession(instructions: defaultInstructions)
-        self.options = GenerationOptions(temperature: 1.0)
         self.instructions = defaultInstructions
         self.instructionsDraft = defaultInstructions
         self.temperature = 1.0
@@ -66,7 +66,6 @@ import UIKit
         self.inputText = ""
         self.attachedImage = nil
         self.isLoadingAttachment = false
-        self.prompt = ""
         self.isResponding = false
         self.isStreaming = false
         self.showsMessageTokenUsage = true
@@ -80,13 +79,13 @@ import UIKit
     }
     
     func getResponse() async {
-        let image = await preparePrompt()
+        let (prompt, image) = await preparePrompt()
         defer {
             isResponding = false
         }
         
         do {
-            let response = try await respond(with: image)
+            let response = try await respond(to: prompt, with: image)
             messages.append(Message_27(text: response.content, sender: .model))
             let modelMessageIndex = messages.index(before: messages.endIndex)
             updateTokenUsage(for: modelMessageIndex, using: response.usage)
@@ -96,8 +95,8 @@ import UIKit
     }
     
     func streamResponse() async {
-        let image = await preparePrompt()
-        let stream = responseStream(with: image)
+        let (prompt, image) = await preparePrompt()
+        let stream = responseStream(to: prompt, with: image)
         defer {
             streamingResponse = ""
             isResponding = false
@@ -139,10 +138,8 @@ import UIKit
     
     func resetSession() {
         session = LanguageModelSession(instructions: instructions)
-        options = GenerationOptions(temperature: temperature)
         inputText = ""
         attachedImage = nil
-        prompt = ""
         isResponding = false
         isStreaming = false
         showsGenerationError = false
@@ -154,24 +151,23 @@ import UIKit
         scheduleInstructionTokenCount()
     }
     
-    private func preparePrompt() async -> UIImage? {
+    private func preparePrompt() async -> (text: String, image: UIImage?) {
         isResponding = true
         let image = attachedImage
         let trimmedInput = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         messages.append(Message_27(text: trimmedInput, sender: .user, image: image))
         let messageIndex = messages.index(before: messages.endIndex)
-        prompt = trimmedInput
         inputText = ""
         attachedImage = nil
         
         messages[messageIndex].tokenCount = try? await SystemLanguageModel.default.tokenCount(
-            for: prompt
+            for: trimmedInput
         )
         
-        return image
+        return (trimmedInput, image)
     }
     
-    private func respond(with image: UIImage?) async throws -> LanguageModelSession.Response<String> {
+    private func respond(to prompt: String, with image: UIImage?) async throws -> LanguageModelSession.Response<String> {
         guard let cgImage = image?.cgImage else {
             return try await session.respond(to: prompt, options: options)
         }
@@ -182,7 +178,7 @@ import UIKit
         }
     }
     
-    private func responseStream(with image: UIImage?) -> LanguageModelSession.ResponseStream<String> {
+    private func responseStream(to prompt: String, with image: UIImage?) -> LanguageModelSession.ResponseStream<String> {
         guard let cgImage = image?.cgImage else {
             return session.streamResponse(to: prompt, options: options)
         }
