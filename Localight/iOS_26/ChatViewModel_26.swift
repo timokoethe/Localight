@@ -42,17 +42,17 @@ import FoundationModels
     private var session: LanguageModelSession
     private var options: GenerationOptions
     
-    var instructions: String        // The instructions to the model of how it should respond and behave.
+    private(set) var instructions: String        // The instructions to the model of how it should respond and behave.
     var instructionsDraft: String   // The in-progress edit of the system prompt, applied on confirmation.
-    var temperature: Double         // The temperature to increase creativity.
+    private(set) var temperature: Double         // The temperature to increase creativity.
     var temperatureDraft: Double    // The in-progress temperature, applied on confirmation.
     let contextSize: Int            // The model's maximum context size in tokens.
     var inputText: String           // The text currently entered by the user.
-    var prompt: String              // The finalized user input sent to the model.
-    var isResponding: Bool          // Indicates whether the model is generating a response.
+    private var prompt: String              // The finalized user input sent to the model.
+    private(set) var isResponding: Bool          // Indicates whether the model is generating a response.
     var isStreaming: Bool           // Indicates whether a response should be streamed to the UI or not.
-    var messages: [Message_26]      // A collection of all messages displayed in the iOS 26 chat view.
-    var streamingResponse: String
+    private(set) var messages: [Message_26]      // A collection of all messages displayed in the iOS 26 chat view.
+    private(set) var streamingResponse: String
     
     /// Whether the draft differs from the active instructions and is non-empty,
     /// i.e. whether there is a meaningful system prompt change to apply.

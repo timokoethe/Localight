@@ -20,24 +20,24 @@ import UIKit
     private var options: GenerationOptions
     private var instructionTokenCountTask: Task<Void, Never>?
     
-    var instructions: String
+    private(set) var instructions: String
     var instructionsDraft: String
-    var temperature: Double
+    private(set) var temperature: Double
     var temperatureDraft: Double
     let contextSize: Int
-    var contextTokensUsed: Int
+    private(set) var contextTokensUsed: Int
     var inputText: String
-    var attachedImage: UIImage?
+    private(set) var attachedImage: UIImage?
     var isLoadingAttachment: Bool
-    var prompt: String
-    var isResponding: Bool
+    private var prompt: String
+    private(set) var isResponding: Bool
     var isStreaming: Bool
     var showsMessageTokenUsage: Bool
     var showsGenerationError: Bool
-    var generationErrorTitle: String
-    var generationErrorMessage: String
-    var messages: [Message_27]
-    var streamingResponse: String
+    private(set) var generationErrorTitle: String
+    private(set) var generationErrorMessage: String
+    private(set) var messages: [Message_27]
+    private(set) var streamingResponse: String
     
     var hasInstructionChanges: Bool {
         let trimmed = instructionsDraft.trimmingCharacters(in: .whitespacesAndNewlines)
